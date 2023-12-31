@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">{{ trans('auth.login') }}</div>
 
-                <div class="card-body" style="background: #fcfbfb">
+                <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

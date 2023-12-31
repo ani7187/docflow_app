@@ -28,10 +28,11 @@ use Illuminate\Support\Facades\Route;
 //    Route::get('/', 'IndexController');
 //});
 
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
+//Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
+
+Auth::routes();
 
 Route::group(['namespace' => 'writing'], function () {
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
 });
 
-Auth::routes();
