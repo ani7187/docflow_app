@@ -11,5 +11,6 @@ return [
     'forgot_your_password' => 'Մոռացել եք գացտնաբառը',
     'confirm_password' => 'Հաստատել գաղտնաբառը',
     'reset_password' => 'Վերականգնել գաղտնաբառը',
-    'send_password_reset_link' => 'Ուղարկել գաղտնաբառի վերակայման հղումը'
+    'send_password_reset_link' => 'Ուղարկել գաղտնաբառի վերակայման հղումը',
+    'user_role' => 'Դերը'
 ];

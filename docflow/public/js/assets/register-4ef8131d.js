@@ -1,0 +1,1 @@
+$(document).ready(function(){console.log("aaa"),$("#user_role_select").on("change",function(){var o=$(this).val(),e=$("#register_form").find("#company_code");o===3?e.length===0&&$("#register_form").append('<input type="text" id="company_code" name="company_code" placeholder="Enter value">'):e.remove()})});

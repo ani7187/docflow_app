@@ -1,14 +1,14 @@
 @extends('layouts.main')
 
 @section('content')
-<div class="container">
+    <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ trans('auth.register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" id="register_form" action="{{ route('register') }}">
                         @csrf
 
                         <div class="row mb-3">
@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ trans('auth.passwords') }}</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ trans('auth.password') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('passwords') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -60,6 +60,20 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ trans('auth.user_role') }}</label>
+
+                            <div class="col-md-6">
+                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="role_id" id="user_role_select">
+                                    @foreach($roles as $role)
+                                        <option value="={{ $role->id }}">{{ $role->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="employee-confirm-div"></div>
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
@@ -81,4 +95,9 @@
         </div>
     </div>
 </div>
+    @section('scripts')
+        <!-- Include your script file here -->
+        <script src=" {{ asset('assets/js/register.js') }} "></script>
+
+    @endsection
 @endsection

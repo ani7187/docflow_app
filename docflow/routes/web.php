@@ -36,3 +36,7 @@ Route::group(['namespace' => 'writing'], function () {
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

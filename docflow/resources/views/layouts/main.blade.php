@@ -88,20 +88,26 @@
                 </li>
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="nav-profile-img">
-                            <img src=" {{ asset('assets/images/faces/face1.jpg') }} " alt="image">
-                            <span class="availability-status online"></span>
+                        <div class="nav">
+{{--                            <img src=" {{ asset('assets/images/faces/face1.jpg') }} " alt="image">--}}
+                            <i class="mdi mdi-account-circle"></i>
+{{--                            <span class="availability-status online"></span>--}}
                         </div>
                         <div class="nav-profile-text">
                             <p class="mb-1 text-black">{{ auth()->user()->name }}</p>
                         </div>
                     </a>
                     <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a class="dropdown-item" href="#">
-                            <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>
+{{--                        <a class="dropdown-item" href="#">--}}
+{{--                            <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>--}}
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
                             <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
                     </div>
                 </li>
             </ul>
@@ -139,6 +145,7 @@
 <!-- Custom js for this page -->
 <script src=" {{ asset('assets/js/dashboard.js') }} "></script>
 <script src=" {{ asset('assets/js/todolist.js') }} "></script>
+@yield('scripts')
 <!-- End custom js for this page -->
 </body>
 </html>

@@ -1,0 +1,15 @@
+{
+  "js/app.js": {
+    "file": "assets/main-298b7a92.js",
+    "imports": [
+      "js/register.js"
+    ],
+    "isEntry": true,
+    "src": "js/app.js"
+  },
+  "js/register.js": {
+    "file": "assets/register-4ef8131d.js",
+    "isEntry": true,
+    "src": "js/register.js"
+  }
+}
