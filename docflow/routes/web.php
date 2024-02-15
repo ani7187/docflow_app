@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\writing\IndexController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 
 //Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
 
-Auth::routes();
+//Auth::routes();
 
 Route::group(['namespace' => 'writing'], function () {
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
@@ -39,4 +40,8 @@ Route::group(['namespace' => 'writing'], function () {
 
 Auth::routes();
 
+Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+Route::post('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

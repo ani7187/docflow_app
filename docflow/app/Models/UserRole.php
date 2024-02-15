@@ -13,4 +13,10 @@ class UserRole extends Model
     const COMPANY = 2;
     const EMPLOYEE = 3;
 
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
 }

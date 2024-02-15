@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'Անուն',
+    'name' => 'Օգտանուն',
     'email_address' => 'Էլ. հասցե',
     'password' => 'Գաղտնաբառ',
     'remember_me' => 'Հիշել',
@@ -12,5 +12,17 @@ return [
     'confirm_password' => 'Հաստատել գաղտնաբառը',
     'reset_password' => 'Վերականգնել գաղտնաբառը',
     'send_password_reset_link' => 'Ուղարկել գաղտնաբառի վերակայման հղումը',
-    'user_role' => 'Դերը'
+    'user_role' => 'Դերը',
+    'organization_name' => 'Կազմակերպության անվանումը',
+    'organization_legal_type' => 'Կազմակերպության իրավական տեսակը',
+    'registration_number' => 'Կազմակերպության գրանցման համարը',
+    'organization_address' => 'Հասցե',
+    'company_form' => 'Գրանցվել որպես կազմակերպություն',
+    'employee_form' => 'Գրանցվել որպես աշխատակից',
+    'first_name' => 'Անուն',
+    'last_name' => 'Ազգանուն',
+    'patronymic_name' => 'Հայրանուն',
+    'position' => 'Պաշտոն',
+    'company_code' => 'Կազմակերպության կոդը համակարգում',
+    ''
 ];
