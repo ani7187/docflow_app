@@ -22,7 +22,7 @@ class PartnerPerson extends Model
         'position',
         'company_code',
         'user_id',
-        'partner_organizations_id'
+        'partner_organization_id'
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

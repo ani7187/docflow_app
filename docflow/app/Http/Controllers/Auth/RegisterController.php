@@ -12,9 +12,11 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -54,14 +56,21 @@ class RegisterController extends Controller
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data): \Illuminate\Contracts\Validation\Validator
     {
 //        dd($data);
-
         $validator = Validator::make($data, ['role_id' => 'required|integer']);
         if ($validator->fails()) {
             return $validator;
         }
+
+//        $messages = [//todo lang
+//            'email.required' => 'Email is required.',
+//            'email.email' => 'Please enter a valid email address.',
+//            'password.required' => 'Password is required.',
+//            'email.exists' => Lang::get("error.invalid_email"),
+//            'failed' => 'ee'
+//        ];
 
         $rules = [
             'name' => 'required|string|max:255|unique:users',
@@ -73,22 +82,20 @@ class RegisterController extends Controller
                 'organization_name' => 'required|string|max:255',
             ]);
         } elseif ($data['role_id'] == UserRole::EMPLOYEE) {
+            $companyCode = $data['company_code'];
+
             $rules = array_merge($rules, [
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'company_code' => 'required|string|max:255',
+                'company_code' => ['required', 'string', 'max:255',
+                    Rule::exists('partner_organizations')->where(function ($query) use ($companyCode) {
+                        $query->whereNotNull('company_code')
+                            ->where('company_code', $companyCode);
+                    }),],
             ]);
         }
 
         $validator = Validator::make($data, $rules);
-
-        if (array_key_exists('company_code', $data)) {
-            $partnerOrg = PartnerOrganization::where('company_code', $data['company_code'])->first();
-            if (!$partnerOrg) {
-                // If partner organization does not exist, return with error
-                $validator->errors()->add('company_code', 'Partner org with this code does not exist');
-            }
-        }
 
 //        dd($validator->errors());
 //        $activeTab = $data['role_id'] == UserRole::COMPANY ? 'company' : 'employee';
@@ -104,16 +111,17 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        DB::beginTransaction();
+
         try {
+//            dd($data);
+            DB::beginTransaction();
+
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role_id' => $data['role_id'],
             ]);
-
-//            dd($data['role_id']);
 
             if ($data['role_id'] == UserRole::COMPANY) {
                 // If the user's role is for partner organization
@@ -124,13 +132,12 @@ class RegisterController extends Controller
                 $partnerOrg = PartnerOrganization::create([
                     'user_id' => $user->id,
                     'company_code' => $companyCode,
-                    'organization_name' => "",//$data['organization_name'],
+                    'organization_name' => $data['organization_name'],
                     'organization_legal_type' => $data['organization_legal_type'],
                     'registration_number' => $data['registration_number'],
                 ]);
             } else if ($data['role_id'] == UserRole::EMPLOYEE) {
-//                dd($data['role_id']);
-
+//                dd($data);
                 // If the user's role is for partner people
                 $partnerOrg = PartnerOrganization::where('company_code', $data['company_code'])->first();
 //                dd($partnerOrg);
@@ -144,21 +151,26 @@ class RegisterController extends Controller
                     'company_code' => $partnerOrg->company_code,
 
                     'user_id' => $user->id,
-                    'partner_organizations_id' => $partnerOrg->id,
+                    'partner_organization_id' => $partnerOrg->id,
                     // Assign other fields from the request data
                 ]);
 //                dd($user);
 
             }
+//        dd($user);
+
             DB::commit();
             return $user;
         } catch (\Exception $e) {
             DB::rollback();
         }
-//        return $user;
+        return $user;
     }
 
-    private function generateCompanyCode()
+    /**
+     * @return string
+     */
+    private function generateCompanyCode(): string
     {
         do {
             $code = Str::random(6); // Adjust the length as needed

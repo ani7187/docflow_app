@@ -24,5 +24,10 @@ return [
     'patronymic_name' => 'Հայրանուն',
     'position' => 'Պաշտոն',
     'company_code' => 'Կազմակերպության կոդը համակարգում',
-    ''
+    'company_code_short' => 'Կազմակերպության կոդը',
+    'save' => 'Հիշել',
+    'new_password' => 'Նոր գաղտնաբառ',
+    'confirm_new_password' => 'Հաստատել նոր գաղտնաբառ',
+    'dont_have_acc' => 'Չունե՞ք հաշիվ - ',
+    'created_at' => 'Գրանցման ամսաթիվ',
 ];

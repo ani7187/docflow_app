@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\UserProfileController;
+use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\PartnerPerson\PartnerPersonController;
 use App\Http\Controllers\writing\IndexController;
-use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -40,8 +41,16 @@ Route::group(['namespace' => 'writing'], function () {
 
 Auth::routes();
 
-Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
-Route::post('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
+Route::middleware(['auth'])->group(function () {
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+    Route::put('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
 
+    Route::get('/employee', [CompanyController::class, 'show'])->name('employee');
+    Route::get('employee/{user}/edit', [PartnerPersonController::class, 'edit'])->name('employee.edit');
+    Route::put('employee/{user}', [PartnerPersonController::class, 'update'])->name('employee.update');
+
+
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+});

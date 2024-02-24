@@ -3,6 +3,7 @@
 namespace App\Models\partnerOrganization;
 
 use App\Enums\UserRole;
+use App\Models\partnerPerson\PartnerPerson;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,5 +41,10 @@ class PartnerOrganization extends Model
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function partnerPersons(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PartnerPerson::class);
     }
 }
