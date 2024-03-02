@@ -7,9 +7,12 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
 use App\Models\UserRole;
+use App\Notifications\CustomVerifyEmailNotification;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
@@ -38,8 +41,8 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
+//    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/verification-required';
     /**
      * Create a new controller instance.
      *
@@ -160,6 +163,7 @@ class RegisterController extends Controller
 //        dd($user);
 
             DB::commit();
+            $user->notify(new CustomVerifyEmailNotification());
             return $user;
         } catch (\Exception $e) {
             DB::rollback();

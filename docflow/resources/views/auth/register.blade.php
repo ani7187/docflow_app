@@ -22,16 +22,16 @@
                 <div class="mt-4">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link " id="company-tab" data-toggle="tab" href="#company" role="tab"
+                            <a class="nav-link active" id="company-tab" data-toggle="tab" href="#company" role="tab"
                                aria-controls="company" aria-selected="true">{{ trans('auth.company_form') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" id="employee-tab" data-toggle="tab" href="#employee" role="tab"
+                            <a class="nav-link " id="employee-tab" data-toggle="tab" href="#employee" role="tab"
                                aria-controls="employee" aria-selected="false">{{ trans('auth.employee_form') }}</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade  " id="company" role="tabpanel" aria-labelledby="company-tab">
+                        <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
                             <div class="mt-5">
                                 <!-- Company Registration Form -->
                                 <form method="POST" id="register_form" action="{{ route('register') }}">
@@ -62,7 +62,7 @@
                                                 <label for="password">{{ trans('auth.password') }}</label>
                                                 <input type="password"
                                                        class="form-control @error('password') is-invalid @enderror"
-                                                       id="password" name="password" value="123456789" required>
+                                                       id="password" name="password" value="qwerty123" required>
                                                 @error('password')
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -72,7 +72,7 @@
                                                 <label
                                                     for="password_confirmation">{{ trans('auth.confirm_password') }}</label>
                                                 <input type="password" class="form-control" id="password_confirmation"
-                                                       name="password_confirmation" value="123456789" required>
+                                                       name="password_confirmation" value="qwerty123" required>
                                             </div>
 
                                             <input type="hidden" id="role_id" name="role_id" value="2" required>
@@ -128,7 +128,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="tab-pane fade show active" id="employee" role="tabpanel"
+                        <div class="tab-pane fade" id="employee" role="tabpanel"
                              aria-labelledby="employee-tab">
                             <!-- Employee Registration Form -->
                             <div class="mt-5">

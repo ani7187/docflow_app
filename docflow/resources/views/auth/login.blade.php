@@ -10,6 +10,11 @@
                                 <img src="../../assets/images/logo.svg">
 {{--                                <h1 style="color: #943494">{{ trans('auth.login') }}</h1>--}}
                             </div>
+                            @if ($errors->has('verification'))
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $errors->first('verification') }}
+                                </div>
+                            @endif
 {{--                            <h4>Hello! let's get started</h4>--}}
 {{--                            <h6 class="font-weight-light">Sign in to continue.</h6>--}}
                             <form method="POST" action="{{ route('login') }}" class="pt-3">

@@ -6,15 +6,18 @@ namespace App\Models;
 use App\Enums\UserRole;
 use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
+use App\Models\userGroup\UserGroup;
 use Couchbase\Role;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +29,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'delete_status',
+        'deleted_at'
     ];
 
     /**
@@ -49,6 +54,7 @@ class User extends Authenticatable
         'role_id' => UserRole::class,
     ];
 
+//    protected $dates = ['deleted_at'];
 
     public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -65,4 +71,8 @@ class User extends Authenticatable
         return $this->hasOne(PartnerOrganization::class);
     }
 
+    public function userGroups()
+    {
+        return $this->belongsToMany(UserGroup::class, 'user_group_user', 'user_id', 'user_group_id');
+    }
 }

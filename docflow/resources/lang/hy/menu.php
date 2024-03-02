@@ -14,5 +14,17 @@ return [
     'admin_tools' => "Ադմինի գործիքներ",
     'add' => 'Ավելացնել',
     'actions' => 'Գործողություններ',
-    'back' => 'Վերադառնալ'
+    'back' => 'Վերադառնալ',
+    'export_pdf' => 'Արտահանել pdf',
+    'user_groups' => 'Խմբեր',
+    'create_new_section' => 'Ավելացնել նոր բաժին',
+    'edit_new_section' => 'Խմբագրել բաժինը',
+    'section_manager' => 'Բաժինների կառավարում',
+    'section_name' => 'Անվանում',
+    'section_description' => 'Նկարագրություն',
+    'save' => 'Հիշել',
+    'success_create' => 'Հաջողությամբ ստեղծվեց',
+    'success_edit' => 'Հաջողությամբ խմբագրվեց',
+    'success_delete' => 'Հաջողությամբ ջնջվեց',
+    'want_delete' => 'Ցանկանու՞մ եք ջնջել:',
 ];

@@ -4,15 +4,21 @@
 @section('content')
     @if(auth()->check())
     <div class="main-panel">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="content-wrapper">
 {{--            {{gettype($user->role_id)}}--}}
 {{--            {{dd($user->partnerOrganization)}}--}}
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
             <div class="bg-white p-5 rounded">
             @if($user->role_id == UserRole::COMPANY)
                     <div class="alert alert-info">
