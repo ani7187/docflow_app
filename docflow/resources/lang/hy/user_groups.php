@@ -9,5 +9,6 @@ return [
     'users' => 'Խմբի անդամներ',
     'add' => 'Ավելացնել խմբի անդամ',
     'select' => 'Ընտրել',
-    'add_members' => 'Ավելացնել անդամներ <strong>« :name »</strong> խմբին'
+    'add_members' => 'Ավելացնել անդամներ <strong>« :name »</strong> խմբին',
+
 ];

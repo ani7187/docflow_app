@@ -27,6 +27,7 @@ class UserGroupController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->hasFile('file'));
         $ownerId = auth()->user()->id;
         $validator = Validator::make($request->all(),
             [

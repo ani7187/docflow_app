@@ -1,4 +1,7 @@
-@php use App\Enums\UserRole; @endphp
+@php
+    use App\Enums\UserRole;
+    use App\Models\permission\Permission;
+@endphp
 @extends('layouts.main')
 
 @section('content')
@@ -20,19 +23,19 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex mb-4">
-                            <a href="{{ route("sections.create") }}" class="btn btn-gradient-primary font-weight-bold">
+                            <a href="{{ route("sections.create") }}"  class="btn btn-gradient-primary font-weight-bold">
                                 {{ trans("menu.add") }}
                             </a>
-{{--                            <a href="{{ route("employee.export_pdf") }}" style="margin-left: 5px" class="btn btn-success font-weight-bold">--}}
-{{--                                {{ trans("menu.export_pdf") }}--}}
-{{--                            </a>--}}
+                            {{--                            <a href="{{ route("employee.export_pdf") }}" style="margin-left: 5px" class="btn btn-success font-weight-bold">--}}
+                            {{--                                {{ trans("menu.export_pdf") }}--}}
+                            {{--                            </a>--}}
                         </div>
-                        <h4 class="card-title"><b>{{ trans("menu.employees") }}</b></h4>
+                        <h4><b>{{ trans("menu.section_manager") }}</b></h4>
                         <hr>
                         <table class="table">
                             <thead>
                             <tr>
-                                <th><b>{{ trans("user_groups.id") }}</b></th>
+                                <th><b>{{ trans("menu.id") }}</b></th>
                                 <th><b>{{ trans("menu.section_name") }}</b></th>
                                 <th><b>{{ trans("menu.section_description") }}</b></th>
                                 <th colspan="3"><b>{{ trans("menu.actions") }}</b></th>
@@ -55,11 +58,16 @@
                                         <form action="{{ route('sections.destroy', $section) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button  type="submit" class="btn p-0" onclick="return confirm('{{trans('menu.want_delete')}}')"><i class="mdi mdi-delete"></i></button>
+                                            <button type="submit" class="btn p-0"
+                                                    onclick="return confirm('{{trans('menu.want_delete')}}')"><i
+                                                    class="mdi mdi-delete"></i></button>
+
                                         </form>
                                     </td>
-                                    <td class="p-0">
-                                        <a href="{{ route('sections.permissions', $section) }}" class="btn p-0">Manage Permissions</a>
+                                    <td class="p-0 pl-1">
+                                        <a href="{{ route('sections.permissions', $section->id) }}" data-section="{{ $section->id }}" class="btn p-0">
+                                            <b>{{ trans('section.manage_permissions') }}</b>
+                                        </a> {{--{{ route('sections.permissions', $section) }}--}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -70,4 +78,8 @@
             </div>
         </div>
     @endif
+    @section('scripts')
+        <script>
+        </script>
+    @endsection
 @endsection

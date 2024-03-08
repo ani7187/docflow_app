@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\UserRole;
 use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
+use App\Models\section\Section;
 use App\Models\userGroup\UserGroup;
 use Couchbase\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -74,5 +75,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userGroups()
     {
         return $this->belongsToMany(UserGroup::class, 'user_group_user', 'user_id', 'user_group_id');
+    }
+
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
     }
 }

@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UserProfileController;
 use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\DocumentController\DocumentController;
+use App\Http\Controllers\FileController\FileController;
 use App\Http\Controllers\PartnerPerson\PartnerPersonController;
+use App\Http\Controllers\Section\PermissionController;
 use App\Http\Controllers\Section\SectionController;
 use App\Http\Controllers\SectionPermission\SectionPermissionController;
 use App\Http\Controllers\TestController;
@@ -52,10 +55,19 @@ Route::group(['namespace' => 'writing', 'middleware' => ['verified', 'auth']], f
 });
 
 Route::middleware(['verified', 'auth'])->group(function () {
-
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     Route::put('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
 
+//    Route::resource('document', DocumentController::class);
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/add', [DocumentController::class, 'add'])->name('documents.add');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+
+    Route::post('/files', [FileController::class, 'store'])->name('files.store');
+
+});
+
+Route::middleware(['verified', 'auth', 'role:2'])->group(function () {
     Route::get('/employee', [CompanyController::class, 'show'])->name('employee');
     Route::get('employee/add', [PartnerPersonController::class, 'add'])->name('employee.add');
     Route::post('employee/store', [PartnerPersonController::class, 'store'])->name('employee.store');
@@ -63,7 +75,6 @@ Route::middleware(['verified', 'auth'])->group(function () {
     Route::put('employee/{user}', [PartnerPersonController::class, 'update'])->name('employee.update');
     Route::put('employee/{user}/delete', [PartnerPersonController::class, 'softDelete'])->name('employee.softDelete'); //usery chi jnjum
     Route::get('/generate-pdf', [CompanyController::class, 'generatePDF'])->name("employee.export_pdf");
-
 
     Route::get('/user_groups', [UserGroupController::class, 'show'])->name('user_groups');
     Route::get('/user_groups/add', [UserGroupController::class, 'add'])->name('user_groups.add');
@@ -77,18 +88,15 @@ Route::middleware(['verified', 'auth'])->group(function () {
     Route::post('/user_group_user/{group}/store', [UserGroupUserController::class, 'store'])->name('user_group_user.store');
     Route::delete('/user_group_user/{userGroupId}/users/{userId}', [UserGroupUserController::class, 'detach'])->name('user_group_user.detach');
 
-
-//    Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
-//    Route::post('/sections', [SectionController::class, 'store'])->name('sections.store');
-//    Route::put('/sections/{section}', [SectionController::class, 'update'])->name('sections.update');
-//    Route::delete('/sections/{section}', [SectionController::class, 'destroy'])->name('sections.destroy');
     Route::resource('sections', SectionController::class);
 
-    Route::get('/sections/{section}/permissions', [SectionPermissionController::class, 'show'])->name('sections.permissions');
+    Route::get('/sections/{section}/permissions', [PermissionController::class, 'show'])->name('sections.permissions');
+    Route::post('/sections/{section}/permissions', [PermissionController::class, 'store'])->name('sections.permissions.store');
+    Route::delete('/sections/permissions/{permission}', [PermissionController::class, 'destroy'])->name('sections.permissions.destroy');
+
 
 
 //    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 });
 Route::get('/send-test-email', [TestController::class, 'sendTestEmail'])->name('send.test.email');
 

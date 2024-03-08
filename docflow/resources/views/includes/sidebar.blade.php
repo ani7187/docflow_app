@@ -32,14 +32,30 @@
 {{--                </ul>--}}
 {{--            </div>--}}
 {{--        </li>--}}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route("profile") }}"> {{--pages/charts/chartjs.html--}}
-                <span class="menu-title">{{ trans('menu.profile') }}</span>
-                <i class="mdi mdi-account-circle menu-icon"></i>
-            </a>
-        </li>
+
+{{--        <li class="nav-item sidebar-actions">--}}
+{{--              <span class="nav-link">--}}
+{{--                <div class="border-bottom">--}}
+{{--                  <h6 class="font-weight-normal mb-3">{{ trans('menu.sections') }}</h6>--}}
+{{--                </div>--}}
+{{--              </span>--}}
+{{--        </li>--}}
+{{--        @if(auth()->user()->role_id == UserRole::EMPLOYEE)--}}
+            @include('includes.dyn_sidebar')
+{{--        @endif--}}
 
         @if(auth()->user()->role_id == UserRole::COMPANY)
+{{--            @if(auth()->user()->sections()->get())--}}
+{{--                @foreach(auth()->user()->sections()->get() as $section)--}}
+{{--                    {{dd(request()->is('*document*') && request()->section == $section->id)}}--}}
+{{--                    <li class="nav-item {{ request()->is('*document*') && request()->section == $section->id ? 'active' : '' }}">--}}
+{{--                        <a class="nav-link {{ request()->is('*document*') && request()->section == $section->id ? 'active' : '' }}"  href="{{ route("documents.index", ['section' => $section->id]) }}"> <!--section_manager-->--}}
+{{--                            <span class="menu-title">{{ $section->name }}</span>--}}
+{{--                            <i class="mdi mdi-file-document menu-icon"></i>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                @endforeach--}}
+{{--            @endif--}}
             <li class="nav-item sidebar-actions">
               <span class="nav-link">
                 <div class="border-bottom">
@@ -47,16 +63,10 @@
                 </div>
               </span>
             </li>
-            <li class="nav-item {{ request()->is('*section*') ? 'active' : '' }}">
-                <a class="nav-link {{ request()->is('*section*') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
+            <li class="nav-item {{ request()->is('section') ? 'active' : '' }}">
+                <a class="nav-link {{ request()->is('section') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
                     <span class="menu-title">{{ trans('menu.section_manager') }}</span>
                     <i class="mdi mdi-plus-circle-outline menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item {{ request()->is('*employee*') ? 'active' : '' }}">
-                <a class="nav-link {{ request()->is('*employee*') ? 'active' : '' }}" href="{{ route("employee") }}">
-                    <span class="menu-title">{{ trans('menu.employees') }}</span>
-                    <i class="mdi mdi-account-multiple menu-icon"></i>
                 </a>
             </li>
             <li class="nav-item {{ request()->is('*user_groups*') ? 'active' : '' }}">
@@ -65,6 +75,18 @@
                     <i class="mdi mdi-account-multiple menu-icon"></i>
                 </a>
             </li>
+            <li class="nav-item {{ request()->is('*employee*') ? 'active' : '' }}">
+                <a class="nav-link {{ request()->is('*employee*') ? 'active' : '' }}" href="{{ route("employee") }}">
+                    <span class="menu-title">{{ trans('menu.employees') }}</span>
+                    <i class="mdi mdi-account-multiple menu-icon"></i>
+                </a>
+            </li>
         @endif
+        <li class="nav-item">
+            <a class="nav-link border-top" href="{{ route("profile") }}"> {{--pages/charts/chartjs.html--}}
+                <span class="menu-title">{{ trans('menu.profile') }}</span>
+                <i class="mdi mdi-account-circle menu-icon"></i>
+            </a>
+        </li>
     </ul>
 </nav>

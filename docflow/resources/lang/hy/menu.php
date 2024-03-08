@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'id' => 'Հ/հ',
     'input_writing' => 'Մուտքային գրություններ',
     'output_writing' => 'Ելքային գրություններ',
     'inner_writing' => 'Ներքին գրություններ',
@@ -17,14 +18,17 @@ return [
     'back' => 'Վերադառնալ',
     'export_pdf' => 'Արտահանել pdf',
     'user_groups' => 'Խմբեր',
-    'create_new_section' => 'Ավելացնել նոր բաժին',
+    'create_new_section' => 'Ավելացնել նոր մենյու',
     'edit_new_section' => 'Խմբագրել բաժինը',
-    'section_manager' => 'Բաժինների կառավարում',
+    'section_manager' => 'Մենյուների կառավարում',
     'section_name' => 'Անվանում',
     'section_description' => 'Նկարագրություն',
     'save' => 'Հիշել',
     'success_create' => 'Հաջողությամբ ստեղծվեց',
     'success_edit' => 'Հաջողությամբ խմբագրվեց',
     'success_delete' => 'Հաջողությամբ ջնջվեց',
+    'error_create' => 'Չհաջողվեց ստեղծվեց',
     'want_delete' => 'Ցանկանու՞մ եք ջնջել:',
+    'sections' => 'Բաժինները',
+    'data_is_missing' => 'Տվյալները բացակայում են'
 ];

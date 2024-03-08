@@ -39,6 +39,23 @@
                                 <label for="description">{{ trans("menu.section_description") }}</label>
                                 <textarea name="description" id="description" class="form-control">{{ $section->description }}</textarea>
                             </div>
+                            <div class="col-md-4">
+                                <label for="additional_column"
+                                       class="pb-1">{{ trans('section.additional_column') }}</label>
+                                <select name="additional_column[]" class="selectpicker form-control"
+                                        data-live-search="true"
+                                        data-none-selected-text="{{ trans('section.select') }}" multiple>
+                                    @foreach(config('application.additional_column_list') as $additionalColumn)
+                                        <option value="{{ $additionalColumn }}"
+                                                @if(in_array($additionalColumn, $additionalColumns)) selected @endif>
+                                            {{ trans('section.' . $additionalColumn) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('additional_column.*')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                             <button type="submit" class="btn btn-primary float-end">{{ trans("menu.save") }}</button>
                         </form>
                     </div>

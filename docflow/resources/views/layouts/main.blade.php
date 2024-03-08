@@ -8,7 +8,7 @@
     <!-- plugins:css -->
     <link rel="stylesheet" href=" {{ asset('assets/vendors/css/vendor.bundle.base.css') }} ">
     <link rel="stylesheet" href=" {{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }} ">
-    <link rel="stylesheet" href="https://cdn.misdeliver.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 
     {{--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">--}}
 
@@ -25,8 +25,23 @@
     <link rel="stylesheet" href=" {{ asset('assets/css/style.css') }} ">
     <!-- End layout styles -->
     <link rel="shortcut icon" href=" {{ asset('assets/images/favicon.ico') }} "/>
+
+    <!-- Include Dropzone.css for styling -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 </head>
 <body>
+<style>
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #ebb3f5 !important;;
+        /*color: #your-text-color;*/
+    }
+    .dropdown-menu .active {
+        color: #0a0a0a;
+        background-color: transparent  !important;;
+        /*color: #your-text-color;*/
+    }
+</style>
 <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     @if(auth()->check())
@@ -162,9 +177,12 @@
 <script src=" {{ asset('assets/js/todolist.js') }} "></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Bootstrap Select JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<!-- Include Dropzone.js library -->
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>--}}
 @yield('scripts')
 
 <!-- End custom js for this page -->
