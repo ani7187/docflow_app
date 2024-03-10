@@ -8,6 +8,7 @@ use App\Models\file\File;
 use App\Models\permission\Permission;
 use App\Models\section\Section;
 use App\Models\sectionAdditionalColumn\SectionAdditionalColumn;
+use App\Models\TemproaryFile;
 use App\Models\User;
 use App\Services\DocumentService\DocumentService;
 use Illuminate\Http\Request;
@@ -38,20 +39,18 @@ class DocumentController extends Controller
         $sectionAdditionalColumns = [];
         if ($lastPermission) {
             $userPermissions = $lastPermission->toArray();
-//            $permissionId = $lastPermission->id;
-//            $sectionId = $lastPermission->section_id;
-
             $sectionAdditionalColumns = SectionAdditionalColumn::where('section_id', $sectionId)->first();
         }
 
         $documents = Document::where('section_id', $sectionId)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
         return view('documents.index', compact('section', 'userPermissions', 'sectionAdditionalColumns', 'documents')); //, 'users', 'userGroups'
     }
 
 
-    public function add(Request $request){
+    public function add(Request $request)
+    {
         $sectionId = $request->query('section');
         $section = Section::find($sectionId);
         $sectionAdditionalColumns = SectionAdditionalColumn::where('section_id', $sectionId)->first();
@@ -59,62 +58,62 @@ class DocumentController extends Controller
         return view('documents.add', compact('section', 'sectionAdditionalColumns'));
     }
 
+    public function upload(Request $request)
+    {
+        if ($request->file('file')) {
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName();
+            $folder = uniqid() . '_' . now()->timestamp;
+            $file->storeAs('documents/tmp/' . $folder, $fileName);
+
+            TemproaryFile::create([
+                'folder' => $folder,
+                'filename' => $fileName
+            ]);
+
+            return $folder;
+        }
+        return '';
+    }
 
     public function store(Request $request)
     {
-//        dd($request);
-//        $request->validate([
-//            'section_id' => 'required|numeric',
-//        ]);
-        dd($request);
+        $request->validate([
+            'section_id' => 'required|numeric',
+        ]);
+
         try {
             DB::beginTransaction();
             $sectionID = $request->input('section_id');
-            if ($request->hasFile('file')) {
-                $uniqueID = Str::uuid();
+            $document = new Document();
+            $document->section_id = $sectionID;
+            if ($request->input("number")) {
+                $document->number = $request->input("number");
+            }
+            if ($request->input("name")) {
+                $document->name = $request->input("name");
+            }
+            if ($request->input("notes")) {
+                $document->notes = $request->input("notes");
+            }
+            $document->uploaded_by = auth()->user()->id;
+            $document->creation_date = date('Y-m-d H:i:s');
 
-                $file = $request->file('file');
-                $fileName = $uniqueID.$file->getClientOriginalExtension();
-                $file->storeAs('documents', $fileName);
+            if ($request->input("due_date")) {
+                $document->due_date = $request->input("due_date"); //todo make nullable
+            }
+            $document->unique_id = Str::uuid();
+            $document->document_signature_status = 0;
+            $document->document_execution_status = 1; //2finish
+            $document->save();
 
+            $tmpFile = TemproaryFile::where('folder', $request->file)->first();
+            if ($tmpFile) {
+                $document->addMedia(storage_path('app/documents/tmp/' . $request->file . '/' . $tmpFile->filename))
+                    ->toMediaCollection('files', 'documents');
 
-                $document = new Document();
-                $document->section_id = $sectionID;
-                if ($request->input("number")) {
-                    $document->number = $request->input("number");
-                }
-                if ($request->input("name")) {
-                    $document->name = $request->input("name");
-                }
-                if ($request->input("notes")) {
-                    $document->notes = $request->input("notes");
-                }
-                $document->uploaded_by = auth()->user()->id;
-                $document->creation_date = Carbon::now();
-
-                if ($request->input("due_date")) {
-                    $document->due_date = Carbon::now(); //todo make nullable
-                }
-                $document->unique_id = Str::uuid();
-                $document->document_signature_status = 0;
-                $document->document_execution_status = 1; //2finish
-                $document->save();
-
-
-
-                $fileModel = new File();
-                $fileModel->section_id = $sectionID;
-                $fileModel->document_id = $document->id;
-                $fileModel->unique_id = $uniqueID;
-                $fileModel->uploaded_by = auth()->user()->id;
-                $fileModel->uploaded_at = Carbon::now();
-                $fileModel->file_size = $file->getSize();
-                $fileModel->file_content_type = $file->getClientMimeType();
-
-    //            $fileModel->
-                $fileModel->name = $file->getClientOriginalName(); // Or any other desired field
-                // Populate other fields as needed
-                $fileModel->save();
+                rmdir(storage_path('app/documents/tmp/' . $request->file));
+                $tmpFile->delete();
             }
             DB::commit();
             return redirect()->route('documents.index', ['section' => $sectionID])->with('success', Lang::get('menu.success_create'));
@@ -122,10 +121,13 @@ class DocumentController extends Controller
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
 
-//        return response()->json(["success" => $request->hasFile('file')]);
+    public function show(Document $document)
+    {
+        $media = $document->getMedia('files');
 
-        // Return a response
 
+        return view('documents.show', compact('document', 'media'));
     }
 }

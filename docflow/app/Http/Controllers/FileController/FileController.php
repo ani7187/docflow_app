@@ -3,50 +3,59 @@
 namespace App\Http\Controllers\FileController;
 
 use App\Http\Controllers\Controller;
-use App\Models\file\File;
-use App\Models\section\Section;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use ZipArchive;
 
 class FileController extends Controller
 {
-    public function store(Request $request, Section $section)
+    public function download(Media $media)
     {
+        $file = storage_path('app\\documents\\' . $media->id . '\\' . $media->file_name);
+        $fileName = $media->file_name;
 
-        dd($request->hasFile('file'));
-//        $request->validate([
-//            'files.*' => 'required|file|mimes:jpg,png,pdf|max:2048', // Example validation rules for files
-//            // Add validation rules for other form fields here
-//        ]);
+        return Response::streamDownload(function () use ($file) {
+            readfile($file);
+        }, $fileName);
+    }
 
-        // Save data associated with the files in the database
-        $files = [];
-
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $originalFilename = $file->getClientOriginalName(); //for storing in db
-            $file->store('documents');
-
-            $fileModel = new File();
-            $fileModel->section_id = $section->id;
-            $fileModel->document_id = 1;
-            $fileModel->unique_id = "4545";
-//            $fileModel->
-            $fileModel->name = $file->getClientOriginalName(); // Or any other desired field
-            // Populate other fields as needed
-            $fileModel->save();
+    public function downloadAll(Media $media)
+    { //todo
+        $tempDir = storage_path('app/temp');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir);
         }
-//        foreach ($request->file('file') as $uploadedFile) {
-//
-//
-//            // Move the file to the desired location
-//            $uploadedFile->storeAs('uploads', $fileModel->name);
-//
-//            $files[] = $fileModel;
-//        }
 
-//        return back()->with('success', 'Files uploaded and data saved successfully.');
-//        return response()->json(["success" => $request->hasFile('file')]);
+        $mediaId = $media->id;
 
+
+        $zipPath = $tempDir . '/media_' . $mediaId . '.zip';
+        $zip = new ZipArchive;
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            foreach ($media->files as $file) {
+                $filePath = storage_path('app/documents/' . $file->id . '/' . $file->file_name);
+                $fileName = $file->file_name;
+                $zip->addFile($filePath, $fileName);
+            }
+            $zip->close();
+        } else {
+            // Handle error opening the zip archive
+            return response()->json(['error' => 'Failed to create zip archive'], 500);
+        }
+
+        // Generate a streamed response for downloading the zip file
+        $response = new StreamedResponse(function () use ($zipPath) {
+            readfile($zipPath);
+        });
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment; filename="media_' . $mediaId . '.zip"');
+
+        // Clean up the temporary directory
+        unlink($zipPath);
+        rmdir($tempDir);
+
+        return $response;
     }
 
 }

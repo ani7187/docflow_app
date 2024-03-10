@@ -8,7 +8,6 @@ use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
 use App\Models\section\Section;
 use App\Models\userGroup\UserGroup;
-use Couchbase\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UserProfileController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\DocumentController\DocumentController;
@@ -27,28 +26,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/login', function () {
-//    return "aaa";
-//});
-//
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//Route::get('/', [IndexController::class, '__invoke'])->name('home');
-
-//Route::group(["namespace" => "Writing"], function (){
-//    Route::get('/', 'IndexController');
-//});
-
-//Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
-
-//Auth::routes();
-
-
-
 //Auth::routes();
 Auth::routes(['verify' => true]);
-
-
 
 Route::group(['namespace' => 'writing', 'middleware' => ['verified', 'auth']], function () {
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
@@ -58,13 +37,14 @@ Route::middleware(['verified', 'auth'])->group(function () {
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     Route::put('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
 
-//    Route::resource('document', DocumentController::class);
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/add', [DocumentController::class, 'add'])->name('documents.add');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
+    Route::post('upload', [DocumentController::class, 'upload']);
 
-    Route::post('/files', [FileController::class, 'store'])->name('files.store');
-
+    Route::get('/media/download/{media}', [FileController::class, 'download'])->name('media.download');
+    Route::get('/media/download-all/{media}', [FileController::class, 'downloadAll'])->name('media.download-all');
 });
 
 Route::middleware(['verified', 'auth', 'role:2'])->group(function () {
@@ -93,14 +73,9 @@ Route::middleware(['verified', 'auth', 'role:2'])->group(function () {
     Route::get('/sections/{section}/permissions', [PermissionController::class, 'show'])->name('sections.permissions');
     Route::post('/sections/{section}/permissions', [PermissionController::class, 'store'])->name('sections.permissions.store');
     Route::delete('/sections/permissions/{permission}', [PermissionController::class, 'destroy'])->name('sections.permissions.destroy');
-
-
-
-//    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
-Route::get('/send-test-email', [TestController::class, 'sendTestEmail'])->name('send.test.email');
 
-
+//Route::get('/send-test-email', [TestController::class, 'sendTestEmail'])->name('send.test.email');
 //config
 Route::get('/verification-required', function () {
     return view('auth.verify');

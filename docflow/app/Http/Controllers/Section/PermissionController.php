@@ -56,17 +56,20 @@ class PermissionController extends Controller
 //        dd($request, $section);
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'user_id.*' => 'required_without_all:user_group_id|exists:users,id,deleted_at,NULL',
-            'user_group_id.*' => 'required_without_all:user_id|exists:user_groups,id,deleted_at,NULL',
-            'permission_type.*' => 'required|in:can_preview,can_view,can_edit',
+            'user_id' => 'required_without_all:user_group_id|array',
+            'user_id.*' => 'exists:users,id,deleted_at,NULL',
+            'user_group_id' => 'required_without_all:user_id|array',
+            'user_group_id.*' => 'exists:user_groups,id,deleted_at,NULL',
+            'permission_type' => 'required|array',
+            'permission_type.*' => 'in:can_preview,can_view,can_edit,can_add',
             'expires_at' => 'nullable|date|after_or_equal:today'
         ], [
-            'user_id.*.required_without_all' => 'Օգտվողը կամ օգտատերերի խումբը պարտադիր է',
+            'user_id.required_without_all' => 'Օգտվողը կամ օգտատերերի խումբը պարտադիր է',
             'user_id.*.exists' => 'Ընտրված օգտվողն անվավեր է կամ ջնջված է',
-            'user_group_id.*.required_without_all' => 'Օգտվողը կամ օգտատերերի խումբը պարտադիր է',
+            'user_group_id.required_without_all' => 'Օգտվողը կամ օգտատերերի խումբը պարտադիր է',
             'user_group_id.*.exists' => 'Ընտրված օգտվողների խումբն անվավեր է կամ ջնջված է',
-            'permission_type.*.required' => 'Թույլտվության տեսակը պարտադիր է',
-            'permission_type.*.in' => 'Ընտրված թույլտվության տեսակն անվավեր է',
+            'permission_type.required' => 'Իրավասության տեսակը պարտադիր է',
+            'permission_type.*.in' => 'Ընտրված իրավասության տեսակն անվավեր է',
         ]);
 
 
@@ -110,7 +113,16 @@ class PermissionController extends Controller
     private function savePermission($type, $sectionID, $request): void
     {
         foreach ($request->input($type) as $index => $data) {
-            $permission = new Permission();
+
+            $existingPermission = Permission::where($type, $data)
+                ->where('section_id', $sectionID)
+                ->first();
+
+            if ($existingPermission) {
+                $permission = $existingPermission;
+            } else {
+                $permission = new Permission();
+            }
 
             if ($type == "user_id") {
                 $permission->user_id = $data;

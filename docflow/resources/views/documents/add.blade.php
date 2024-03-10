@@ -18,24 +18,20 @@
 
         <div class="main-panel">
             <div class="content-wrapper">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+                <div class="mb-3">
+                    <a href="{{ route('documents.index', ['section' => $section->id]) }}" class="btn p-0" style="cursor:pointer;">
+                        <i class="mdi mdi-keyboard-backspace"></i>
+                        {{ trans('menu.back') }}
+                    </a>
+                </div>
+                @include("partials.alerts")
+
                 <div class="card">
                     <div class="card-body">
                         <form id="uploadForm" method="POST" action="{{ route('documents.store') }}"  enctype="multipart/form-data">
                             @csrf <!-- Include CSRF token here -->
                             <div class="form-group">
-                                <input name="section_id" type="number" value="{{ $section->id }}" >
+                                <input name="section_id" type="number" value="{{ $section->id }}" hidden>
                             </div>
                             <!-- Additional form fields for section additional columns -->
                             @if($sectionAdditionalColumns)
@@ -58,7 +54,9 @@
                             @endif
 
                             <div class="form-group">
-                                <input type="file" name="file" id="file" class="form-control-file" required>
+                                <label for="file">{{ trans('section.select_files') }}</label>
+                                <input type="file" name="file" id="file" class="form-control-file" placeholder="{{ trans('section.select_files') }}" multiple>
+                                <small class="form-text text-muted">{{ trans('section.allowed_file_types') }}</small>
                             </div>
 {{--                            <div id="dropzone" class="dropzone"></div>--}}
 
@@ -76,53 +74,88 @@
         </div>
     @endif
     @section('scripts')
-        <script type="text/javascript">
-            // new Dropzone("#my-dropzone-form", {
-            //     thumbnailWidth:200,
-            //     maxFiles: 5,
-            //             acceptedFiles: "image/*,application/pdf,.doc,.docx,.txt", // Allowed file types
-            //
-            // })
+        <script>
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('input[id="file"]');
 
-            {{--Dropzone.autoDiscover = false;--}}
-            {{--var myDropzone = new Dropzone("#dropzone", {--}}
-            {{--    url: "{{ route('documents.store') }}",--}}
-            {{--    headers: {--}}
-            {{--        'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-            {{--    },--}}
-            {{--    paramName: "file", // Set the name for file uploads--}}
-            {{--    autoProcessQueue: false,--}}
-            {{--    acceptedFiles: "image/!*,application/pdf,.doc,.docx,.txt",--}}
-            {{--    maxFiles: 5,--}}
-            {{--    init: function() {--}}
-            {{--        var submitButton = document.getElementById('submit-button');--}}
-            {{--        var dropzone = this; // Store reference to Dropzone object--}}
+            // Create a FilePond instance
+            const pond = FilePond.create(inputElement);
 
-            {{--        // Listen for click event on submit button--}}
-            {{--        submitButton.addEventListener('click', function() {--}}
-            {{--            // Process queue manually--}}
-            {{--            debugger--}}
-            {{--            dropzone.processQueue();--}}
-            {{--        });--}}
+            FilePond.setOptions({
+                server: {
+                    url: '/upload',
+                    headers : {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                },
+                acceptedFileTypes: ['image/jpeg', 'image/png', 'application/pdf', 'application/zip', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            });
 
-            {{--        // Listen for success event--}}
-            {{--        this.on("success", function(file, response) {--}}
-            {{--            // Handle success response--}}
-            {{--            console.log("File uploaded successfully:", file);--}}
-            {{--            console.log("Server response:", response);--}}
-            {{--        });--}}
-
-            {{--        // Listen for error event--}}
-            {{--        this.on("error", function(file, errorMessage, xhr) {--}}
-            {{--            debugger--}}
-            {{--            // Handle error response--}}
-            {{--            console.error("File upload failed:", file);--}}
-            {{--            console.error("Error message:", errorMessage);--}}
-            {{--        });--}}
-            {{--    }--}}
-            {{--});--}}
-
-
+            FilePond.create(document.querySelector('input[type="file"]'), {
+                onaddfile: (error, file) => {
+                    if (!error) {
+                        // Check if the uploaded file type is accepted
+                        if (FilePond.options.acceptedFileTypes.includes(file.fileType)) {
+                            // Perform actions for accepted file types
+                            alert('Uploaded file type is accepted: ' + file.fileType);
+                        } else {
+                            // Perform actions for rejected file types
+                            alert('Uploaded file type is not accepted: ' + file.fileType);
+                            // Remove the file from FilePond
+                            FilePond.removeFile(file.id);
+                        }
+                    }
+                }
+            });
         </script>
+
+{{--        <script type="text/javascript">--}}
+{{--            // new Dropzone("#my-dropzone-form", {--}}
+{{--            //     thumbnailWidth:200,--}}
+{{--            //     maxFiles: 5,--}}
+{{--            //             acceptedFiles: "image/*,application/pdf,.doc,.docx,.txt", // Allowed file types--}}
+{{--            //--}}
+{{--            // })--}}
+
+{{--            --}}{{--Dropzone.autoDiscover = false;--}}
+{{--            --}}{{--var myDropzone = new Dropzone("#dropzone", {--}}
+{{--            --}}{{--    url: "{{ route('documents.store') }}",--}}
+{{--            --}}{{--    headers: {--}}
+{{--            --}}{{--        'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+{{--            --}}{{--    },--}}
+{{--            --}}{{--    paramName: "file", // Set the name for file uploads--}}
+{{--            --}}{{--    autoProcessQueue: false,--}}
+{{--            --}}{{--    acceptedFiles: "image/!*,application/pdf,.doc,.docx,.txt",--}}
+{{--            --}}{{--    maxFiles: 5,--}}
+{{--            --}}{{--    init: function() {--}}
+{{--            --}}{{--        var submitButton = document.getElementById('submit-button');--}}
+{{--            --}}{{--        var dropzone = this; // Store reference to Dropzone object--}}
+
+{{--            --}}{{--        // Listen for click event on submit button--}}
+{{--            --}}{{--        submitButton.addEventListener('click', function() {--}}
+{{--            --}}{{--            // Process queue manually--}}
+{{--            --}}{{--            debugger--}}
+{{--            --}}{{--            dropzone.processQueue();--}}
+{{--            --}}{{--        });--}}
+
+{{--            --}}{{--        // Listen for success event--}}
+{{--            --}}{{--        this.on("success", function(file, response) {--}}
+{{--            --}}{{--            // Handle success response--}}
+{{--            --}}{{--            console.log("File uploaded successfully:", file);--}}
+{{--            --}}{{--            console.log("Server response:", response);--}}
+{{--            --}}{{--        });--}}
+
+{{--            --}}{{--        // Listen for error event--}}
+{{--            --}}{{--        this.on("error", function(file, errorMessage, xhr) {--}}
+{{--            --}}{{--            debugger--}}
+{{--            --}}{{--            // Handle error response--}}
+{{--            --}}{{--            console.error("File upload failed:", file);--}}
+{{--            --}}{{--            console.error("Error message:", errorMessage);--}}
+{{--            --}}{{--        });--}}
+{{--            --}}{{--    }--}}
+{{--            --}}{{--});--}}
+
+
+{{--        </script>--}}
     @endsection
 @endsection

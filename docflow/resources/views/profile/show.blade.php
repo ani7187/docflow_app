@@ -16,7 +16,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="content-wrapper">
+        <div class="content-wrapper pt-4">
+            <h3>{{ trans('menu.profile') }}</h3>
+
 {{--            {{gettype($user->role_id)}}--}}
 {{--            {{dd($user->partnerOrganization)}}--}}
             <div class="bg-white p-5 rounded">
