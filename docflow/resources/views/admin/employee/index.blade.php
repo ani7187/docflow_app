@@ -5,18 +5,7 @@
     @if(auth()->check())
         <div class="main-panel">
             <div class="content-wrapper">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+                @include("partials.alerts")
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex mb-4">
@@ -33,37 +22,46 @@
                             <thead>
                             <tr>
                                 <th><b>{{ trans("auth.email_address") }}</b></th>
-                                <th><b>{{ trans("auth.last_name") }}</b></th>
-                                <th><b>{{ trans("auth.first_name") }}</th>
-                                <th><b>{{ trans("auth.patronymic_name") }}</b></th>
+                                <th><b>{{ trans("auth.user_name") }}</b></th>
+{{--                                <th><b>{{ trans("auth.last_name") }}</b></th>--}}
+{{--                                <th><b>{{ trans("auth.first_name") }}</th>--}}
+{{--                                <th><b>{{ trans("auth.patronymic_name") }}</b></th>--}}
                                 <th><b>{{ trans("auth.position") }}</b></th>
                                 <th><b>{{ trans("auth.company_code_short") }}</b></th>
                                 <th><b>{{ trans("auth.created_at") }}</b></th>
-                                <th colspan="2"><b>{{ trans("menu.actions") }}</b></th>
+                                <th><b>{{ trans("auth.status") }}</b></th>
+                                <th colspan="2"><b></b></th> {{--{{ trans("menu.actions") }}--}}
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($partnerPersons as $partnerPerson)
                                 <tr>
                                     <td>{{ $partnerPerson->user->email }}</td>
-                                    <td>{{ $partnerPerson->first_name }}</td>
-                                    <td>{{ $partnerPerson->last_name }}</td>
-                                    <td>{{ $partnerPerson->patronymic_name }}</td>
+                                    <td>{{ $partnerPerson->first_name . " " . $partnerPerson->last_name . " " . $partnerPerson->patronymic_name}}</td>
+{{--                                    <td>{{ $partnerPerson->last_name }}</td>--}}
+{{--                                    <td>{{ $partnerPerson->patronymic_name }}</td>--}}
                                     <td>{{ $partnerPerson->position }}</td>
                                     <td>{{ $partnerPerson->company_code }}</td>
                                     <td>{{ $partnerPerson->created_at }}</td>
                                     <td>
+                                        @if(Auth::user()->password_change_required)
+                                            <label class="badge badge-warning">{{ trans('auth.invited') }}</label>
+                                        @else
+                                        <label class="badge badge-success">{{ trans('auth.active') }}</label>
+                                        @endif
+                                    </td>
+                                    <td class="p-0 m-0">
                                         <!-- Edit Button -->
                                         <a href="{{ route('employee.edit', $partnerPerson->user_id) }}">
                                             <i class="mdi mdi-grease-pencil"></i>
                                         </a>
                                     </td>
-                                    <td>
+                                    <td class="p-0 m-0">
                                         <!-- Delete Button -->
                                         <form method="POST" action="{{ route('employee.softDelete', $partnerPerson->user_id) }}">
                                             @csrf
                                             @method('PUT')
-                                            <button type="submit" class="btn"><i class="mdi mdi-delete"></i></button>
+                                            <button type="submit" class="btn p-0 m-0"><i class="mdi mdi-delete"></i></button>
                                         </form>
                                     </td>
                                     {{--                                    <td><label class="badge badge-danger">Pending</label></td>--}}

@@ -52,6 +52,7 @@ class CompanyController extends Controller
 
         }
 
+//        dd($partnerPersonList);
         $title = "employee_list";
 
         $dompdf = new Dompdf();

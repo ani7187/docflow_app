@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\FileController;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Response;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -15,8 +16,11 @@ class FileController extends Controller
         $file = storage_path('app\\documents\\' . $media->id . '\\' . $media->file_name);
         $fileName = $media->file_name;
 
-        return Response::streamDownload(function () use ($file) {
-            readfile($file);
+        $encryptedContents = file_get_contents($file);
+        $decryptedContents = Crypt::decrypt($encryptedContents);
+
+        return Response::streamDownload(function () use ($decryptedContents) {
+            echo $decryptedContents;
         }, $fileName);
     }
 

@@ -19,8 +19,14 @@ return [
     'creation_date' => 'Ստեղծման ամսաթիվ',
     'due_date' => 'Վերջնաժամկետ',
     'additional_column' => 'Սյուներ',
+    'select_employee' => 'Ընտրել աշխատակից',
+    'confirm' => 'Հաստատել',
+    'reject' => 'Մերժել',
+
+    'main_info' => 'Հակիրճ տվյալներ',
+    'action_history' => 'Գործողությունների պատմություն',
 
     'select_files' => 'Կցել ֆայլեր',
-        'allowed_file_types' => 'Դուք կարող եք բեռնել .jpeg, .jpg, .png, .pdf, .zip, .docx, .doc, .xls, .xlsx ֆորմատի ֆայլեր, յուրաքանչյուրը ոչ ավել, քան 50 ՄԲ
-',
+    'allowed_file_types' => 'Դուք կարող եք բեռնել .pdf, .docx, ֆորմատի ֆայլեր, յուրաքանչյուրը ոչ ավել, քան 50 ՄԲ',
+
 ];

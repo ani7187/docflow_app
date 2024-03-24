@@ -40,10 +40,13 @@
                                         @if($value && in_array($columnName, config('application.additional_column_list')))
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="{{ $columnName }}">{{ trans("section.$columnName") }}</label>
                                                     @if($columnName == 'creation_date')
+                                                        <label for="{{ $columnName }}">{{ trans("section.$columnName") }}</label>
                                                         <input type="date" class="form-control" id="{{ $columnName }}" name="{{ $columnName }}">
+{{--                                                    @elseif($columnName == 'notes')--}}
+{{--                                                        <textarea name="content" id="myTextarea"></textarea>--}}
                                                     @else
+                                                        <label for="{{ $columnName }}">{{ trans("section.$columnName") }}</label>
                                                         <input type="text" class="form-control" id="{{ $columnName }}" name="{{ $columnName }}">
                                                     @endif
                                                 </div>
@@ -51,12 +54,25 @@
                                         @endif
                                     @endforeach
                                 </div>
+{{--                                <div class="row mb-5">--}}
+{{--                                    <div class="col-md-12">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            @if(in_array('notes', config('application.additional_column_list')))--}}
+{{--                                                <textarea class="form-control" id="summernote" name="notes"></textarea>--}}
+{{--                                            @endif--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                             @endif
 
                             <div class="form-group">
                                 <label for="file">{{ trans('section.select_files') }}</label>
-                                <input type="file" name="file" id="file" class="form-control-file" placeholder="{{ trans('section.select_files') }}" multiple>
+                                <input type="file" name="file[]" id="file" class="form-control-file" placeholder="{{ trans('section.select_files') }}" multiple>
                                 <small class="form-text text-muted">{{ trans('section.allowed_file_types') }}</small>
+
+                                @error('file')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
 {{--                            <div id="dropzone" class="dropzone"></div>--}}
 
@@ -74,7 +90,19 @@
         </div>
     @endif
     @section('scripts')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+
         <script>
+
+            // tinymce.init({
+            //     selector: 'textarea', // Change this to your textarea selector
+            //     plugins: 'advlist autolink lists link image charmap print preview anchor',
+            //     toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            //     menubar: 'file edit view insert format tools table help',
+            //     toolbar_mode: 'floating',
+            //     height: 400
+            // });
+
             // Get a reference to the file input element
             const inputElement = document.querySelector('input[id="file"]');
 
@@ -90,72 +118,12 @@
                 },
                 acceptedFileTypes: ['image/jpeg', 'image/png', 'application/pdf', 'application/zip', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             });
-
-            FilePond.create(document.querySelector('input[type="file"]'), {
-                onaddfile: (error, file) => {
-                    if (!error) {
-                        // Check if the uploaded file type is accepted
-                        if (FilePond.options.acceptedFileTypes.includes(file.fileType)) {
-                            // Perform actions for accepted file types
-                            alert('Uploaded file type is accepted: ' + file.fileType);
-                        } else {
-                            // Perform actions for rejected file types
-                            alert('Uploaded file type is not accepted: ' + file.fileType);
-                            // Remove the file from FilePond
-                            FilePond.removeFile(file.id);
-                        }
-                    }
-                }
+    </script>
+        <script>
+            $(document).ready(function() {
+                debugger
+                $('#summernote').summernote();
             });
         </script>
-
-{{--        <script type="text/javascript">--}}
-{{--            // new Dropzone("#my-dropzone-form", {--}}
-{{--            //     thumbnailWidth:200,--}}
-{{--            //     maxFiles: 5,--}}
-{{--            //             acceptedFiles: "image/*,application/pdf,.doc,.docx,.txt", // Allowed file types--}}
-{{--            //--}}
-{{--            // })--}}
-
-{{--            --}}{{--Dropzone.autoDiscover = false;--}}
-{{--            --}}{{--var myDropzone = new Dropzone("#dropzone", {--}}
-{{--            --}}{{--    url: "{{ route('documents.store') }}",--}}
-{{--            --}}{{--    headers: {--}}
-{{--            --}}{{--        'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-{{--            --}}{{--    },--}}
-{{--            --}}{{--    paramName: "file", // Set the name for file uploads--}}
-{{--            --}}{{--    autoProcessQueue: false,--}}
-{{--            --}}{{--    acceptedFiles: "image/!*,application/pdf,.doc,.docx,.txt",--}}
-{{--            --}}{{--    maxFiles: 5,--}}
-{{--            --}}{{--    init: function() {--}}
-{{--            --}}{{--        var submitButton = document.getElementById('submit-button');--}}
-{{--            --}}{{--        var dropzone = this; // Store reference to Dropzone object--}}
-
-{{--            --}}{{--        // Listen for click event on submit button--}}
-{{--            --}}{{--        submitButton.addEventListener('click', function() {--}}
-{{--            --}}{{--            // Process queue manually--}}
-{{--            --}}{{--            debugger--}}
-{{--            --}}{{--            dropzone.processQueue();--}}
-{{--            --}}{{--        });--}}
-
-{{--            --}}{{--        // Listen for success event--}}
-{{--            --}}{{--        this.on("success", function(file, response) {--}}
-{{--            --}}{{--            // Handle success response--}}
-{{--            --}}{{--            console.log("File uploaded successfully:", file);--}}
-{{--            --}}{{--            console.log("Server response:", response);--}}
-{{--            --}}{{--        });--}}
-
-{{--            --}}{{--        // Listen for error event--}}
-{{--            --}}{{--        this.on("error", function(file, errorMessage, xhr) {--}}
-{{--            --}}{{--            debugger--}}
-{{--            --}}{{--            // Handle error response--}}
-{{--            --}}{{--            console.error("File upload failed:", file);--}}
-{{--            --}}{{--            console.error("Error message:", errorMessage);--}}
-{{--            --}}{{--        });--}}
-{{--            --}}{{--    }--}}
-{{--            --}}{{--});--}}
-
-
-{{--        </script>--}}
     @endsection
 @endsection

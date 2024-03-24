@@ -1,14 +1,25 @@
 @extends('layouts.main')
 
 @section('content')
+    <style>
+        .is-invalid {
+            border-color: red;
+        }
+
+        .form-group input {
+            border-radius: 10px;
+            border: 1px solid lightgray;
+        }
+    </style>
 {{--    <div class="container-scroller">--}}
 {{--            <div class="content-wrapper ">--}}
                 <div class="row flex-grow mt-5">
-                    <div class="col-lg-4 mx-auto">
+                    <div class="col-lg-1 col-md-1"></div>
+                    <div class="col-lg-4 col-md-4 mt-5" >
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo mb-1">
-                                <img src="../../assets/images/logo.svg">
-{{--                                <h1 style="color: #943494">{{ trans('auth.login') }}</h1>--}}
+{{--                                <img src="../../assets/images/logo.svg">--}}
+                                <h1 style="color: #da8cff"><b>{{ trans('auth.login') }}</b></h1>
                             </div>
                             @if ($errors->has('verification'))
                                 <div class="alert alert-danger" role="alert">
@@ -21,16 +32,19 @@
                                 @csrf
 
                                 <div class="form-group">
-{{--                                    <label for="email" class="col-form-label text-md-end">{{ trans('auth.email_address') }}</label>--}}
+                                    <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">@</span>
+                                    </div>{{--                                    <label for="email" class="col-form-label text-md-end">{{ trans('auth.email_address') }}</label>--}}
                                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                                            name="email" value="{{ old('email') }}" required autocomplete="email"
                                            placeholder="{{ trans('auth.email_address') }}" autofocus>
-
                                     @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
@@ -68,6 +82,9 @@
                                 </div>
                             </form>
                         </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6" style="padding-left: 0px">
+                        <img style="height: 525px" src="../../assets/images/side.jpeg">
                     </div>
                 </div>
 {{--            </div>--}}

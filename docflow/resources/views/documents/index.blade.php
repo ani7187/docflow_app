@@ -35,27 +35,40 @@
                                                 <th><b>{{ trans("section.$additionalColumn") }}</b></th>
                                             @endif
                                         @endforeach
+                                        @if($userPermissions["can_edit"])
+                                            <td></td>
+                                        @endif
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($documents as $key => $document)
-                                        <tr onclick="window.location='{{ route('documents.show', ['document' => $document->id, 'section' => $section->id]) }}';"
-                                            style="cursor:pointer;background: #fdfcfc">
+                                        <tr style="background: #fdfcfc">
                                             <td>{{ $key + 1 }}</td>
                                             @foreach(config('application.additional_column_list') as $additionalColumn)
                                                 @if($additionalColumn == "uploaded_by")
-                                                    <td>{{ $document->uploader->email }}</td>
+                                                    <td @if($userPermissions["can_view"]) style="cursor:pointer" onclick="window.location='{{ route('documents.show', ['document' => $document->id, 'section' => $section->id]) }}';" @endif>{{ $document->uploader->email }}</td>
                                                 @elseif($sectionAdditionalColumns[$additionalColumn])
-                                                    <td>{{ $document->$additionalColumn }}</td>
+                                                    <td @if($userPermissions["can_view"]) style="cursor:pointer" onclick="window.location='{{ route('documents.show', ['document' => $document->id, 'section' => $section->id]) }}';" @endif>{{ $document->$additionalColumn }}</td>
                                                 @endif
                                             @endforeach
+                                            @if($userPermissions["can_edit"])
+                                                <td class="text-center">
+                                                    <form action="{{ route('documents.destroy', $document->id) }}"
+                                                          id="delete-form" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn p-0">
+                                                            <i class="mdi mdi-delete delete-button"></i></button>
+                                                    </form>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                            <div style="height: 50px">
-                                {{ $documents->appends(['section' => request()->section])->links() }}
+                            <div class="mt-5 float-end" style="height: 50px">
+                                {{ $documents->appends(['section' => request()->section])->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>
@@ -72,4 +85,24 @@
             @include('partials.footer')
         </div>
     @endif
+@endsection
+@section('scripts')
+    <script>
+        debugger
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '{{ trans('menu.want_delete') }}',
+                    icon: 'warning',
+                    confirmButtonText: '{{ trans('menu.confirm') }}',
+                    cancelButtonText: '{{ trans('menu.cancel') }}',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#delete-form').submit();
+                    }
+                });
+            })
+        })
+    </script>
 @endsection

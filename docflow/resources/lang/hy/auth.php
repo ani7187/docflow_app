@@ -30,6 +30,10 @@ return [
     'confirm_new_password' => 'Հաստատել նոր գաղտնաբառ',
     'dont_have_acc' => 'Չունե՞ք հաշիվ - ',
     'created_at' => 'Գրանցման ամսաթիվ',
+    'user_name' => 'Աշխատակից',
+    'status' => 'Ստատուս',
+    'invited' => 'Հրավիրված',
+    'active' => 'Ակտիվ',
 
 
     'verify_your_email_address' => 'Հաստատեք ձեր էլփոստի հասցեն',
@@ -40,4 +44,5 @@ return [
     'email_verification_required' => 'էլ. փոստի հաստատում է պարտադիր է',
     'fresh_verification_link_sent_your_email_address' => 'Ձեր էլ. փոստի հասցեին ուղարկվել է նոր հաստատման հղում',
     'failed' => 'Սխալ էլ. հասցե կամ գաղտնաբառ',
+    'change_password' => 'Փոխեք     էլ. հասցեով ստացված գաղտնաբառը',
 ];

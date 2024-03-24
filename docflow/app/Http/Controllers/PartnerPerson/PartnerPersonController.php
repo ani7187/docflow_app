@@ -8,10 +8,12 @@ use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
 use App\Models\User;
 use App\Notifications\CustomVerifyEmailNotification;
+use App\Notifications\PartnerVerifyEmailNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -38,7 +40,7 @@ class PartnerPersonController extends Controller
         $rules = array(
             'name' => 'required|string|max:255|unique:users',
             'email' => 'required|email|unique:users|string|max:255',
-            'password' => 'required|string|min:8|confirmed',
+//            'password' => 'required|string|min:8|confirmed',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'company_code' => 'required|string|max:255|'.
@@ -58,14 +60,15 @@ class PartnerPersonController extends Controller
 
             $user = Auth::user();
             $partnerOrganizationID = $user->partnerOrganization->id;
-
-//            dd($user);
+            $password = $this->generatePassword();
 
             $newUser = User::create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
+                'password' => Hash::make($password),
                 'role_id' => UserRole::EMPLOYEE,
+                'email_verified_at' => now(),
+                'password_change_required' => true,
             ]);
 
             PartnerPerson::create([
@@ -79,7 +82,9 @@ class PartnerPersonController extends Controller
                 'partner_organization_id' => $partnerOrganizationID,
             ]);
             DB::commit();
-            $newUser->notify(new CustomVerifyEmailNotification());
+            $newUser->notify(new PartnerVerifyEmailNotification($password, $user->partnerOrganization->organization_name));
+//            Mail::to($newUser->email)->send(new \App\Mail\VerifyEmail($newUser));
+
             return redirect()->route('employee')->with('success', 'Հաջողությամբ ստեղծվեց:');
         } catch (\Exception $e) {
             DB::rollback();
@@ -165,5 +170,17 @@ class PartnerPersonController extends Controller
             // Log the exception or provide more specific error messages
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    private function generatePassword() {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_+=';
+        $password = '';
+
+        // Generate a random string using the specified characters
+        for ($i = 0; $i < 12; $i++) {
+            $password .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $password;
     }
 }

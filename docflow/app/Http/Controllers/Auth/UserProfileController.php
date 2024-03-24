@@ -65,6 +65,7 @@ class UserProfileController extends Controller
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         if (!empty($request->input('password')) && $user["password"] != Hash::make($request->input('password'))) {
+            $user->password_change_required = false;
             $user->password = Hash::make($request->input('password'));
         }
         $user->save();

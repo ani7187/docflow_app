@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\ActionController\ActionController;
+use App\Http\Controllers\Auth\PartnerVerificationController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\UserProfileController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\DocumentController\DocumentController;
 use App\Http\Controllers\FileController\FileController;
+use App\Http\Controllers\InboxController\InboxController;
 use App\Http\Controllers\PartnerPerson\PartnerPersonController;
 use App\Http\Controllers\Section\PermissionController;
 use App\Http\Controllers\Section\SectionController;
@@ -28,21 +32,40 @@ use Illuminate\Support\Facades\Route;
 
 //Auth::routes();
 Auth::routes(['verify' => true]);
+//Route::post('/login', 'Auth\LoginController@login')->middleware('blockIPAfterAttempts');//todo nayel
 
-Route::group(['namespace' => 'writing', 'middleware' => ['verified', 'auth']], function () {
+Route::group(['namespace' => 'writing', 'middleware' => ['verified', 'auth', 'pass_changed']], function () {
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
 });
 
 Route::middleware(['verified', 'auth'])->group(function () {
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     Route::put('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
+});
+Route::middleware(['verified', 'auth', 'pass_changed'])->group(function () {
+    Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
 
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/add', [DocumentController::class, 'add'])->name('documents.add');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
-    Route::post('upload', [DocumentController::class, 'upload']);
+    Route::get('documents/{document}/history', [DocumentController::class, 'history'])->name('documents.history');
+    Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
+    Route::get('/documents/{document}/send_to_confirmation', [ActionController::class, 'send_to_confirmation'])->name('documents.send_to_confirmation');
+    //todo implement
+    Route::post('/documents/{document}', [ActionController::class, 'send'])->name('documents.send');
+
+    Route::get('/documents/{document}/confirm', [ActionController::class, 'confirm_show'])->name('documents.confirm_show');
+    //todo implement Route::post('/documents/{document}', [ActionController::class, 'confirm'])->name('documents.confirm');
+    Route::get('/documents/{document}/send_to_sign', [ActionController::class, 'send_to_sign'])->name('documents.send_to_sign');
+    //todo implement Route::post('/documents/{document}', [ActionController::class, 'send_to_sign'])->name('documents.send_sign');
+    Route::get('/documents/{document}/sign', [ActionController::class, 'sign_show'])->name('documents.sign_show');
+    //todo implement Route::post('/documents/{document}', [ActionController::class, 'send_to_sign'])->name('documents.send_sign');
+
+    Route::post('upload', [DocumentController::class, 'upload']);
     Route::get('/media/download/{media}', [FileController::class, 'download'])->name('media.download');
     Route::get('/media/download-all/{media}', [FileController::class, 'downloadAll'])->name('media.download-all');
 });
@@ -79,7 +102,7 @@ Route::middleware(['verified', 'auth', 'role:2'])->group(function () {
 //config
 Route::get('/verification-required', function () {
     return view('auth.verify');
-})->name('verification.notice')->middleware(['verified', 'auth']);
+})->name('verification.notic')->middleware(['verified', 'auth']);
 
 Route::get('/{any}', function () {
     return redirect('/')->with('message', 'You have been redirected to the home page.');

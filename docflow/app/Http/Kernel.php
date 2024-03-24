@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\EnsurePassChanged;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -83,5 +84,6 @@ class Kernel extends HttpKernel
 //        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verified' => EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\CheckRole::class,
+        'pass_changed' => EnsurePassChanged::class,
     ];
 }

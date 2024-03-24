@@ -4,28 +4,17 @@
 @section('content')
     @if(auth()->check())
     <div class="main-panel">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
         <div class="content-wrapper pt-4">
+            @include("partials.alerts")
             <h3>{{ trans('menu.profile') }}</h3>
 
 {{--            {{gettype($user->role_id)}}--}}
 {{--            {{dd($user->partnerOrganization)}}--}}
             <div class="bg-white p-5 rounded">
             @if($user->role_id == UserRole::COMPANY)
-                    <div class="alert alert-info">
+<!--                    <div class="alert alert-info">
                         <strong>{{ trans("auth.company_code_short") }}` </strong> {{ $user->partnerOrganization->company_code }}
-                    </div>
+                    </div>-->
                     <form method="POST" id="profile_update" action="{{ route('profile.update') }}">
                         @csrf
                         @method('PUT')
@@ -111,6 +100,11 @@
                         </button>
                     </form>
             @elseif($user->role_id == UserRole::EMPLOYEE)
+                @if(auth()->user()->password_change_required)
+                    <div class="alert alert-info">
+                        <strong>{{ trans("auth.change_password") }}:</strong>
+                    </div>
+                @endif
                 <form method="POST" id="profile_update" action="{{ route('profile.update') }}">
                     @csrf
                     @method('PUT')

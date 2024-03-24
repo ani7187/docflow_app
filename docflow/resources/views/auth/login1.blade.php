@@ -2,10 +2,10 @@
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+        <div class="row mt-5 justify-content-center">
+            <div class="col-md-5">
                 <div class="card">
-                    <div class="card-header">{{ trans('auth.login') }}</div>
+{{--                    <div class="card-header">{{ trans('auth.login') }}</div>--}}
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('login') }}">
@@ -79,6 +79,9 @@
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-5">
+                <img style="height: 525px" src="../../assets/images/side.jpeg">
             </div>
         </div>
     </div>

@@ -5,6 +5,7 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
+    'cipher' => 'AES-256-CBC',
     /*
     |--------------------------------------------------------------------------
     | Application Name

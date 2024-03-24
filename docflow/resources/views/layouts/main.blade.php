@@ -17,6 +17,7 @@
     <!-- Bootstrap Select CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
 
     <!-- endinject -->
     <!-- Plugin css for this page -->
@@ -27,6 +28,8 @@
     <link rel="stylesheet" href=" {{ asset('assets/css/style.css') }} ">
     <!-- End layout styles -->
     <link rel="shortcut icon" href=" {{ asset('assets/images/favicon.ico') }} "/>
+{{--    <link rel="stylesheet" href=" {{ asset('plugins/summernote/summernote-bs4.min.css') }}"/>--}}
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
     <!-- Include Dropzone.css for styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
@@ -44,7 +47,7 @@
         /*color: #your-text-color;*/
     }
     input {
-        height: 40px !important;
+        height: 44px !important;
     }
 </style>
 <div class="container-scroller">
@@ -180,11 +183,16 @@
 <!-- Custom js for this page -->
 <script src=" {{ asset('assets/js/dashboard.js') }} "></script>
 <script src=" {{ asset('assets/js/todolist.js') }} "></script>
+<script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ asset('js/tinymce.min.js') }}"></script>
+{{--<script src="{{ asset('plugins/summernote/summernote-bs4.min') }}"></script>--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>--}}
 
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 

@@ -8,13 +8,16 @@ use App\Models\section\Section;
 use App\Providers\RouteServiceProvider;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use function Psy\debug;
 
 class LoginController extends Controller
 {
@@ -29,7 +32,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, ThrottlesLogins;
 
     /**
      * Where to redirect users after login.
@@ -37,6 +40,10 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+    protected $maxAttempts = 5; // Maximum number of login attempts allowed
+    protected $decayMinutes = 5; // Lockout period in minutes
+
+    protected $throttleBy = 'ip';
 
     /**
      * Create a new controller instance.
@@ -46,6 +53,11 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function throttleKey(Request $request)
+    {
+        return strtolower($request->ip() . '|' . $request->userAgent());
     }
 
     /**

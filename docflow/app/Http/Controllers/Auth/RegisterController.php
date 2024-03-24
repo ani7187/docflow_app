@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Mail\VerifyEmail;
 use App\Models\partnerOrganization\PartnerOrganization;
 use App\Models\partnerPerson\PartnerPerson;
 use App\Models\UserRole;
@@ -12,10 +13,12 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -77,7 +80,7 @@ class RegisterController extends Controller
 
         $rules = [
             'name' => 'required|string|max:255|unique:users',
-            'email' => 'required|email|unique:users|string|max:255',
+            'email' => 'required|email|unique:users|string|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
             'password' => 'required|string|min:8|confirmed',
         ];
         if ($data['role_id'] == UserRole::COMPANY) {
@@ -116,7 +119,6 @@ class RegisterController extends Controller
     {
 
         try {
-//            dd($data);
             DB::beginTransaction();
 
             $user = User::create([
@@ -127,12 +129,9 @@ class RegisterController extends Controller
             ]);
 
             if ($data['role_id'] == UserRole::COMPANY) {
-                // If the user's role is for partner organization
-                // Generate a unique company code
                 $companyCode = $this->generateCompanyCode();
 
-                // Create the partner organization record
-                $partnerOrg = PartnerOrganization::create([
+                PartnerOrganization::create([
                     'user_id' => $user->id,
                     'company_code' => $companyCode,
                     'organization_name' => $data['organization_name'],
@@ -140,13 +139,8 @@ class RegisterController extends Controller
                     'registration_number' => $data['registration_number'],
                 ]);
             } else if ($data['role_id'] == UserRole::EMPLOYEE) {
-//                dd($data);
-                // If the user's role is for partner people
                 $partnerOrg = PartnerOrganization::where('company_code', $data['company_code'])->first();
-//                dd($partnerOrg);
-
-                // Create the partner person record linked to the partner organization
-                $partnerPerson = PartnerPerson::create([
+                PartnerPerson::create([
                     'first_name' => $data['first_name'],
                     'last_name' => $data['last_name'],
                     'patronymic_name' => $data['patronymic_name'],
@@ -157,18 +151,15 @@ class RegisterController extends Controller
                     'partner_organization_id' => $partnerOrg->id,
                     // Assign other fields from the request data
                 ]);
-//                dd($user);
-
             }
-//        dd($user);
-
-            DB::commit();
             $user->notify(new CustomVerifyEmailNotification());
+            DB::commit();
             return $user;
         } catch (\Exception $e) {
             DB::rollback();
+//            dd($e->getMessage());
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
-        return $user;
     }
 
     /**

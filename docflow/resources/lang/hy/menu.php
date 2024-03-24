@@ -18,9 +18,9 @@ return [
     'back' => 'Վերադառնալ',
     'export_pdf' => 'Արտահանել pdf',
     'user_groups' => 'Խմբեր',
-    'create_new_section' => 'Ավելացնել նոր մենյու',
+    'create_new_section' => 'Ավելացնել նոր տեսակ',
     'edit_new_section' => 'Խմբագրել բաժինը',
-    'section_manager' => 'Մենյուների կառավարում',
+    'section_manager' => 'Փաստաթղթի տեսակներ',//Մենյուների կառավարում
     'section_name' => 'Անվանում',
     'section_description' => 'Նկարագրություն',
     'save' => 'Հիշել',
@@ -30,5 +30,8 @@ return [
     'error_create' => 'Չհաջողվեց ստեղծվեց',
     'want_delete' => 'Ցանկանու՞մ եք ջնջել:',
     'sections' => 'Բաժինները',
-    'data_is_missing' => 'Տվյալները բացակայում են'
+    'data_is_missing' => 'Տվյալները բացակայում են',
+    'confirm' => 'Հաստատել',
+    'cancel' => 'Չեղարկել',
+    'inbox' => 'Փոստ ինձ'
 ];

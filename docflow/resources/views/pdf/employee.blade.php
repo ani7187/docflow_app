@@ -49,7 +49,7 @@
             <td>{{ $partnerPerson["patronymic_name"] }}</td>
             <td>{{ $partnerPerson["position"] }}</td>
 {{--            <td>{{ $partnerPerson->company_code }}</td>--}}
-            <td>{{ $partnerPerson["created_at"] }}</td>
+{{--            <td>{{ $partnerPerson["created_at"] }}</td>--}}
         </tr>
     @endforeach
     </tbody>

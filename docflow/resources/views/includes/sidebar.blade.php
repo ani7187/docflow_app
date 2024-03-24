@@ -41,9 +41,17 @@
 {{--              </span>--}}
 {{--        </li>--}}
 {{--        @if(auth()->user()->role_id == UserRole::EMPLOYEE)--}}
-            @include('includes.dyn_sidebar')
 {{--        @endif--}}
 
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is('*inbox*') ? 'active' : '' }}"  href="{{ route("inbox") }}"> <!--section_manager-->
+                <span class="menu-title">{{ trans('menu.inbox') }}</span>
+                <i class="mdi mdi-inbox menu-icon"></i>
+            </a>
+        </li>
+        @if(!auth()->user()->password_change_required)
+            @include('includes.dyn_sidebar')
+        @endif
         @if(auth()->user()->role_id == UserRole::COMPANY)
 {{--            @if(auth()->user()->sections()->get())--}}
 {{--                @foreach(auth()->user()->sections()->get() as $section)--}}
@@ -63,19 +71,19 @@
                 </div>
               </span>
             </li>
-            <li class="nav-item {{ request()->is('section') ? 'active' : '' }}">
-                <a class="nav-link {{ request()->is('section') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('*section*') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
                     <span class="menu-title">{{ trans('menu.section_manager') }}</span>
                     <i class="mdi mdi-plus-circle-outline menu-icon"></i>
                 </a>
             </li>
-            <li class="nav-item {{ request()->is('*user_groups*') ? 'active' : '' }}">
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('*user_groups*') ? 'active' : '' }}" href="{{ route("user_groups") }}">
                     <span class="menu-title">{{ trans('menu.user_groups') }}</span>
                     <i class="mdi mdi-account-multiple menu-icon"></i>
                 </a>
             </li>
-            <li class="nav-item {{ request()->is('*employee*') ? 'active' : '' }}">
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('*employee*') ? 'active' : '' }}" href="{{ route("employee") }}">
                     <span class="menu-title">{{ trans('menu.employees') }}</span>
                     <i class="mdi mdi-account-multiple menu-icon"></i>
