@@ -17,9 +17,9 @@ $accessibleSections = Section::whereHas('permissions', function (Builder $query)
 })->get();
 ?>
 @foreach ($accessibleSections as $section)
-    <li class="nav-item {{ request()->is('*document*') && request()->section == $section->id ? 'active' : '' }}">
-        <a class="nav-link {{ request()->is('*document*') && request()->section == $section->id ? 'active' : '' }}"
-           href="{{ route("documents.index", ['section' => $section->id]) }}"> <!--section_manager-->
+    <li class="nav-item">
+        <a class="nav-link"
+           href="{{ route('documents.index', ['section' => $section->id]) }}">
             <span class="menu-title">{{ $section->name }}</span>
             <i class="mdi mdi-file-document menu-icon"></i>
         </a>

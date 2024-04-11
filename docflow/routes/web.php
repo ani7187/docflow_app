@@ -9,9 +9,11 @@ use App\Http\Controllers\DocumentController\DocumentController;
 use App\Http\Controllers\FileController\FileController;
 use App\Http\Controllers\InboxController\InboxController;
 use App\Http\Controllers\PartnerPerson\PartnerPersonController;
+use App\Http\Controllers\PDFSignatureController;
 use App\Http\Controllers\Section\PermissionController;
 use App\Http\Controllers\Section\SectionController;
 use App\Http\Controllers\SectionPermission\SectionPermissionController;
+use App\Http\Controllers\TCPDFController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserGroup\UserGroupController;
 use App\Http\Controllers\UserGroupUser\UserGroupUserController;
@@ -38,6 +40,9 @@ Route::group(['namespace' => 'writing', 'middleware' => ['verified', 'auth', 'pa
     Route::get('/', [IndexController::class, '__invoke'])->name('writing.index');
 });
 
+Route::get('/tcpdf',[TCPDFController::class,'downloadPdf']);
+Route::get('/generatepdf', [PDFSignatureController::class, 'generatePDFWithSignature']);
+
 Route::middleware(['verified', 'auth'])->group(function () {
     Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
     Route::put('/profile/update', [UserProfileController::class, 'update'])->name('profile.update');
@@ -53,17 +58,19 @@ Route::middleware(['verified', 'auth', 'pass_changed'])->group(function () {
     Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+//    Route::get('/documents/search', [DocumentController::class, 'search'])->name('documents.search');
 
     Route::get('/documents/{document}/send_to_confirmation', [ActionController::class, 'send_to_confirmation'])->name('documents.send_to_confirmation');
-    //todo implement
     Route::post('/documents/{document}', [ActionController::class, 'send'])->name('documents.send');
 
     Route::get('/documents/{document}/confirm', [ActionController::class, 'confirm_show'])->name('documents.confirm_show');
     //todo implement Route::post('/documents/{document}', [ActionController::class, 'confirm'])->name('documents.confirm');
     Route::get('/documents/{document}/send_to_sign', [ActionController::class, 'send_to_sign'])->name('documents.send_to_sign');
-    //todo implement Route::post('/documents/{document}', [ActionController::class, 'send_to_sign'])->name('documents.send_sign');
+    Route::post('/documents/{document}', [ActionController::class, 'send_to_sign_send'])->name('documents.send_sign');
     Route::get('/documents/{document}/sign', [ActionController::class, 'sign_show'])->name('documents.sign_show');
-    //todo implement Route::post('/documents/{document}', [ActionController::class, 'send_to_sign'])->name('documents.send_sign');
+    Route::post('/documents/{document}', [ActionController::class, 'sign'])->name('documents.sign');
+    Route::get('/documents/{document}/finish', [ActionController::class, 'finish'])->name('documents.finish');
+    Route::post('/documents/{document}', [ActionController::class, 'finish_store'])->name('documents.finish_store');
 
     Route::post('upload', [DocumentController::class, 'upload']);
     Route::get('/media/download/{media}', [FileController::class, 'download'])->name('media.download');
@@ -100,10 +107,10 @@ Route::middleware(['verified', 'auth', 'role:2'])->group(function () {
 
 //Route::get('/send-test-email', [TestController::class, 'sendTestEmail'])->name('send.test.email');
 //config
-Route::get('/verification-required', function () {
-    return view('auth.verify');
-})->name('verification.notic')->middleware(['verified', 'auth']);
+//Route::get('/verification-required', function () {
+//    return view('auth.verify');
+//})->name('verification.notice')->middleware(['verified', 'auth']);
 
-Route::get('/{any}', function () {
-    return redirect('/')->with('message', 'You have been redirected to the home page.');
-})->where('any', '.*');
+//Route::get('/{any}', function () {
+//    return redirect('/')->with('message', 'You have been redirected to the home page.');
+//})->where('any', '.*');

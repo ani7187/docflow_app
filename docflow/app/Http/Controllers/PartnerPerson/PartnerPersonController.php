@@ -39,7 +39,9 @@ class PartnerPersonController extends Controller
 
         $rules = array(
             'name' => 'required|string|max:255|unique:users',
-            'email' => 'required|email|unique:users|string|max:255',
+            'email' => 'required|email|unique:users|string|max:255|'.Rule::unique('users')->where(function ($query) {
+                $query->whereNull('deleted_at');
+            }),
 //            'password' => 'required|string|min:8|confirmed',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',

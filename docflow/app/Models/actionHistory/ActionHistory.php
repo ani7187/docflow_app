@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActionHistory extends Model
 {
+
+    public static $searchable = [
+        'action_name',
+        'notes',
+        // Add more columns here
+    ];
+
     protected $fillable = array(
         'executor_id',
         'receiver_id',

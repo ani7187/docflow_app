@@ -5,8 +5,10 @@
     <div class="main-panel">
         <div class="content-wrapper">
             @include("partials.alerts")
-            @include("partials.actions", ["documentID" => $document->id, "sectionID" => $document->section_id])
-            {{--            <div class="card">--}}
+            @if($document->document_execution_status == 2)
+                @include("partials.actions", ["documentID" => $document->id, "sectionID" => $document->section_id])
+            @endif
+                {{--            <div class="card">--}}
             {{--                <div class="card-body">--}}
             <div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">

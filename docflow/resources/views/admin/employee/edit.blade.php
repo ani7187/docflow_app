@@ -100,12 +100,12 @@
                                                value="{{ $user->partnerPerson->patronymic_name }}">
                                     </div>
                                     <div class="row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group">
                                             <label for="position">{{ trans('auth.position') }}</label>
                                             <input type="text" class="form-control" id="position" name="position"
                                                    value="{{ $user->partnerPerson->position }}">
                                         </div>
-                                        <div class="form-group col-md-6">
+<!--                                        <div class="form-group col-md-6">
                                             <label for="company_code">{{ trans('auth.company_code_short') }} *</label>
                                             <input type="text"
                                                    class="form-control @error('company_code') is-invalid @enderror"
@@ -115,7 +115,7 @@
                                             @error('company_code')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>

@@ -27,7 +27,7 @@
 {{--                                <th><b>{{ trans("auth.first_name") }}</th>--}}
 {{--                                <th><b>{{ trans("auth.patronymic_name") }}</b></th>--}}
                                 <th><b>{{ trans("auth.position") }}</b></th>
-                                <th><b>{{ trans("auth.company_code_short") }}</b></th>
+{{--                                <th><b>{{ trans("auth.company_code_short") }}</b></th>--}}
                                 <th><b>{{ trans("auth.created_at") }}</b></th>
                                 <th><b>{{ trans("auth.status") }}</b></th>
                                 <th colspan="2"><b></b></th> {{--{{ trans("menu.actions") }}--}}
@@ -41,13 +41,39 @@
 {{--                                    <td>{{ $partnerPerson->last_name }}</td>--}}
 {{--                                    <td>{{ $partnerPerson->patronymic_name }}</td>--}}
                                     <td>{{ $partnerPerson->position }}</td>
-                                    <td>{{ $partnerPerson->company_code }}</td>
+{{--                                    <td>{{ $partnerPerson->company_code }}</td>--}}
                                     <td>{{ $partnerPerson->created_at }}</td>
                                     <td>
-                                        @if(Auth::user()->password_change_required)
+                                        @if(!$partnerPerson->user->is_active)
+                                        <label class="badge badge-danger">{{ trans('auth.disabled') }}</label>
+                                    <td class="p-0 m-0">
+                                        <!-- Delete Button -->
+                                        <form method="POST" action="#">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn p-0 m-0"><i class="mdi mdi-account"></i></button>
+                                        </form>
+                                    </td>
+                                        @elseif($partnerPerson->user->password_change_required)
                                             <label class="badge badge-warning">{{ trans('auth.invited') }}</label>
-                                        @else
-                                        <label class="badge badge-success">{{ trans('auth.active') }}</label>
+                                        <td class="p-0 m-0">
+                                            <!-- Delete Button -->
+                                            <form method="POST" action="{{ route('employee.softDelete', $partnerPerson->user_id) }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn p-0 m-0"><i class="mdi mdi-account-off"></i></button>
+                                            </form>
+                                        </td>
+                                        @elseif(!$partnerPerson->user->password_change_required && $partnerPerson->user->is_active)
+                                            <label class="badge badge-success">{{ trans('auth.active') }}</label>
+                                            <td class="p-0 m-0">
+                                                <!-- Delete Button -->
+                                                <form method="POST" action="{{ route('employee.softDelete', $partnerPerson->user_id) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn p-0 m-0"><i class="mdi mdi-account-off"></i></button>
+                                                </form>
+                                            </td>
                                         @endif
                                     </td>
                                     <td class="p-0 m-0">

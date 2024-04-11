@@ -14,25 +14,26 @@
 </style>
 
     @if(auth()->check())
+{{--        @dd($document, $section)--}}
 {{--            {{dd(auth()->user()->partnerOrganization->company_code)}}--}}
 
         <div class="main-panel">
             <div class="content-wrapper">
                 <div class="mb-3">
-                    <a href="{{ route('documents.show', ['document' => $document->id, 'section' => $section->id]) }}" class="btn p-0" style="cursor:pointer;">
+                    <a href="{{ route('documents.show', ['document' => $document->id, 'section' => $sectionId]) }}" class="btn p-0" style="cursor:pointer;">
                         <i class="mdi mdi-keyboard-backspace"></i>
                         {{ trans('menu.back') }}
                     </a>
                 </div>
                 @include("partials.alerts")
-
+{{--@dd($section->id)--}}
                 <div class="card">
                     <div class="card-body">
                         <form action="{{ route('documents.update', ['document' => $document->id]) }}" method="POST"  enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <input name="section_id" type="number" value="{{ $section->id }}" hidden>
+                                <input name="section_id" type="number" value="{{ $sectionId }}" hidden>
                             </div>
                             <!-- Additional form fields for section additional columns -->
                             @if($sectionAdditionalColumns)
@@ -68,6 +69,11 @@
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                @foreach ($media as $file)
+                                    <input type="text" name="unique_id[]" id="unique_id" class="form-control-file" value="{{$file['unique_id']}}" multiple hidden>
+                                @endforeach
+                            </div>
 {{--                            <div id="dropzone" class="dropzone"></div>--}}
 
                             <button type="submit" id="submit-button" class="btn btn-primary float-end mt-5">
@@ -93,25 +99,37 @@
         // Create a FilePond instance
         const pond = FilePond.create(inputElement);
 
-        FilePond.setOptions({
+        pond.setOptions({
             server: {
-                url: '/upload',
+                process: '/upload',
                 headers : {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
             },
-            acceptedFileTypes: ['application/pdf', 'application/zip', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            acceptedFileTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',]
         });
 
         @foreach ($media as $file)
+{{--            @dd($file['url'])--}}
         pond.addFile('{{ $file->getUrl() }}');
+{{--        pond.addFile('{{ $file['url'] }}');--}}
         @endforeach
-
+        pond.on('error', function(error) {
+            console.error('Error loading file:', error);
+        });
+        // pond.on('addfile', (error, file) => {
+        //     debugger
+        //     if (!error) {
+        //         console.log('File added:', file);
+        //     } else {
+        //         console.error('Error adding file:', error);
+        //     }
+        // });
     </script>
     <script>
-        $(document).ready(function() {
-            debugger
-            $('#summernote').summernote();
-        });
+        // $(document).ready(function() {
+        //     debugger
+        //     $('#summernote').summernote();
+        // });
     </script>
 @endsection

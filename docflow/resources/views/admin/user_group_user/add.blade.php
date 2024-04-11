@@ -38,7 +38,7 @@
                                 <select name="user_ids[]" id="user_ids" class="selectpicker form-control @error('user_ids')invalid-feedback is-invalid @enderror"
                                         data-live-search="true" multiple data-none-selected-text="{{ trans('user_groups.select') }}">
                                     @foreach($users as $user)
-                                        <option value="{{ $user->id }}" @if(in_array($user->id, old('user_ids', []))) selected @endif>{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" @if(in_array($user->id, old('user_ids', []))) selected @endif>{{ $user->email }}</option>
                                     @endforeach
                                 </select>
 {{--                                @dump($errors->all())--}}

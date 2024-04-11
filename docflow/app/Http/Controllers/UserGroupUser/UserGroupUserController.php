@@ -51,7 +51,6 @@ class UserGroupUserController extends Controller
         foreach ($partnerPersons as $key => $partnerPerson) {
             $users[] = User::findOrFail($partnerPerson->user_id);
         }
-
         return view('admin.user_group_user.add', compact('group', 'groupName', 'users'));
     }
 

@@ -43,13 +43,13 @@
 {{--        @if(auth()->user()->role_id == UserRole::EMPLOYEE)--}}
 {{--        @endif--}}
 
+        @if(!auth()->user()->password_change_required)
         <li class="nav-item">
             <a class="nav-link {{ request()->is('*inbox*') ? 'active' : '' }}"  href="{{ route("inbox") }}"> <!--section_manager-->
                 <span class="menu-title">{{ trans('menu.inbox') }}</span>
                 <i class="mdi mdi-inbox menu-icon"></i>
             </a>
         </li>
-        @if(!auth()->user()->password_change_required)
             @include('includes.dyn_sidebar')
         @endif
         @if(auth()->user()->role_id == UserRole::COMPANY)
@@ -64,15 +64,42 @@
 {{--                    </li>--}}
 {{--                @endforeach--}}
 {{--            @endif--}}
-            <li class="nav-item sidebar-actions">
-              <span class="nav-link">
-                <div class="border-bottom">
-                  <h6 class="font-weight-normal mb-3">{{ trans('menu.admin_tools') }}</h6>
-                </div>
-              </span>
-            </li>
+{{--            <li class="nav-item sidebar-actions">--}}
+{{--              <span class="nav-link">--}}
+{{--                <div class="border-bottom">--}}
+{{--                  <h6 class="font-weight-normal mb-3">{{ trans('menu.admin_tools') }}</h6>--}}
+{{--                </div>--}}
+{{--              </span>--}}
+{{--            </li>--}}
+
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('*section*') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
+                <a class="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="true" aria-controls="general-pages">
+                    <span class="menu-title">Կարգավորումներ</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse show" id="general-pages" style="">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('*section*') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> <!--section_manager-->
+                                <span class="menu-title">{{ trans('menu.section_manager') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('*user_groups*') ? 'active' : '' }}" href="{{ route("user_groups") }}">
+                                <span class="menu-title">{{ trans('menu.user_groups') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('*employee*') ? 'active' : '' }}" href="{{ route("employee") }}">
+                                <span class="menu-title">{{ trans('menu.employees') }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+<!--            <li class="nav-item">
+                <a class="nav-link {{ request()->is('*section*') ? 'active' : '' }}"  href="{{ route("sections.index") }}"> &lt;!&ndash;section_manager&ndash;&gt;
                     <span class="menu-title">{{ trans('menu.section_manager') }}</span>
                     <i class="mdi mdi-plus-circle-outline menu-icon"></i>
                 </a>
@@ -88,7 +115,7 @@
                     <span class="menu-title">{{ trans('menu.employees') }}</span>
                     <i class="mdi mdi-account-multiple menu-icon"></i>
                 </a>
-            </li>
+            </li>-->
         @endif
         <li class="nav-item">
             <a class="nav-link border-top" href="{{ route("profile") }}"> {{--pages/charts/chartjs.html--}}

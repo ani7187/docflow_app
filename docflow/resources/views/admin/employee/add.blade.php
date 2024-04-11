@@ -6,12 +6,13 @@
         {{--            {{dd(auth()->user()->partnerOrganization->company_code)}}--}}
         <div class="main-panel">
             <div class="content-wrapper">
-                <div class="mb-3">
-                    <a href="{{ url()->previous() }}" class="btn p-0">
-                        <i class="mdi mdi-keyboard-backspace"></i>
-                        {{ trans('menu.back') }}
-                    </a>
-                </div>
+                <h3>{{ trans('auth.add_employee') }}</h3>
+{{--                <div class="mb-3">--}}
+{{--                    <a href="{{ url()->previous() }}" class="btn p-0">--}}
+{{--                        <i class="mdi mdi-keyboard-backspace"></i>--}}
+{{--                        {{ trans('menu.back') }}--}}
+{{--                    </a>--}}
+{{--                </div>--}}
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -49,7 +50,11 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-
+                                    <div class="form-group ">
+                                        <label for="position">{{ trans('auth.position') }}</label>
+                                        <input type="text" class="form-control" id="position" name="position"
+                                               value="{{ old('position') }}">
+                                    </div>
 {{--                                    <div class="form-group">--}}
 {{--                                        <label for="password">{{ trans('auth.password') }}</label>--}}
 {{--                                        <input type="password"--}}
@@ -102,11 +107,6 @@
                                                value="{{ old('patronymic_name') }}">
                                     </div>
                                     <div class="row">
-                                        <div class="form-group col-md-12">
-                                            <label for="position">{{ trans('auth.position') }}</label>
-                                            <input type="text" class="form-control" id="position" name="position"
-                                                   value="{{ old('position') }}">
-                                        </div>
                                         <div class="form-group col-md-6" style="display: none">
                                             <label for="company_code">{{ trans('auth.company_code_short') }} *</label>
                                             <input type="text"
@@ -128,6 +128,7 @@
                     </div>
                 </div>
             </div>
+            @include('partials.footer')
         </div>
 
     @endif

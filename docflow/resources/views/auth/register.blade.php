@@ -26,6 +26,21 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
+                                    <input type="hidden" id="role_id" name="role_id" value="2" required>
+                                    @error('role_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                    <div class="form-group">
+                                        <label for="organization_name">{{ trans('auth.organization_name') }}
+                                            *</label>
+                                        <input type="text"
+                                               class="form-control @error('organization_name') is-invalid @enderror"
+                                               id="organization_name" name="organization_name" required
+                                               value="{{ old('organization_name') }}">
+                                        @error('organization_name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                     <div class="form-group">
                                         <label for="name">{{ trans('auth.name') }} *</label>
                                         <input type="text"
@@ -66,49 +81,10 @@
                                                name="password_confirmation" required>
                                         <span id="message" style="color: red;"></span><br>
                                     </div>
-
-                                    <input type="hidden" id="role_id" name="role_id" value="2" required>
-                                    @error('role_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="organization_name">{{ trans('auth.organization_name') }}
-                                            *</label>
-                                        <input type="text"
-                                               class="form-control @error('organization_name') is-invalid @enderror"
-                                               id="organization_name" name="organization_name" required
-                                               value="{{ old('organization_name') }}">
-                                        @error('organization_name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label
-                                            for="organization_legal_type">{{ trans('auth.organization_legal_type') }}</label>
-                                        <input type="text" class="form-control" id="organization_legal_type"
-                                               name="organization_legal_type"
-                                               value="{{ old('organization_legal_type') }}">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label
-                                            for="registration_number">{{ trans('auth.registration_number') }}</label>
-                                        <input type="text" class="form-control" id="registration_number"
-                                               name="registration_number"
-                                               value="{{ old('registration_number') }}">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label
-                                            for="organization_address">{{ trans('auth.organization_address') }}</label>
-                                        <input type="text" class="form-control" id="organization_address"
-                                               name="organization_address"
-                                               value="{{ old('organization_address') }}">
-                                    </div>
+                                    <img style="height: 500px" src="../../assets/images/side.jpeg">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">

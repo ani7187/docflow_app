@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -135,8 +136,8 @@ class RegisterController extends Controller
                     'user_id' => $user->id,
                     'company_code' => $companyCode,
                     'organization_name' => $data['organization_name'],
-                    'organization_legal_type' => $data['organization_legal_type'],
-                    'registration_number' => $data['registration_number'],
+//                    'organization_legal_type' => $data['organization_legal_type'],
+//                    'registration_number' => $data['registration_number'],
                 ]);
             } else if ($data['role_id'] == UserRole::EMPLOYEE) {
                 $partnerOrg = PartnerOrganization::where('company_code', $data['company_code'])->first();
@@ -157,8 +158,8 @@ class RegisterController extends Controller
             return $user;
         } catch (\Exception $e) {
             DB::rollback();
-//            dd($e->getMessage());
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            Log::error($e->getMessage());
+//            return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
     }
 

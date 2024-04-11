@@ -41,4 +41,9 @@ return [
         'use_path_style_endpoint' => true,
 //                'debug' => true,
     ],
+
+    'search' => [
+        'enabled' => env('ELASTICSEARCH_ENABLED', false),
+        'hosts' => explode(',', env('ELASTICSEARCH_HOSTS')),
+    ],
 ];

@@ -17,7 +17,9 @@ trait ActionLoggingTrait
     {
         $actionHistory = new ActionHistory();
         $actionHistory->executor_id = auth()->user()->id;
-        $actionHistory->receiver_id = $receiverID;
+        if (!empty($receiverID)) {
+            $actionHistory->receiver_id = $receiverID;
+        }
         $actionHistory->action_name = $actionName;
         $actionHistory->notes = $notes;
         $actionHistory->document_id = $documentID;

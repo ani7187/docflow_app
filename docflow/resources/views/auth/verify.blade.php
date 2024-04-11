@@ -37,8 +37,8 @@
 
                 <div class="card-body">
                     <div class="brand-logo mb-1">
-                        <img style="height: 75px;" src="../../assets/images/logo.svg">
-                        {{--                                <h1 style="color: #943494">{{ trans('auth.login') }}</h1>--}}
+{{--                        <img style="height: 75px;" src="../../assets/images/logo.svg">--}}
+                            <h1 style="color: #da8cff">{{ trans('auth.verify') }}</h1>
                     </div>
 {{--                    <div class="card-header bg-primary text-white">{{ trans('auth.verify_your_email_address') }}</div>--}}
                     @if (session('resent'))

@@ -11,7 +11,7 @@
             @include("partials.alerts")
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('documents.update', ['document' => $document->id]) }}" method="POST"  enctype="multipart/form-data">
+{{--                    <form action="{{ route('documents.send_sign', ['document' => $document->id]) }}" method="POST"  enctype="multipart/form-data">--}}
                     @csrf
                         <div class="form-group">
                             <input name="section_id" type="number" value="{{ $section }}" hidden>
@@ -22,10 +22,10 @@
                         </div>
                         <div class="form-group">
                             <label for="notes">{{ trans('section.select_employee') }}</label>
-                            <select name="user_ids[]" id="user_ids" class="selectpicker form-control @error('user_ids')invalid-feedback is-invalid @enderror"
+                            <select name="receiver_id" id="user_ids" class="selectpicker form-control @error('user_ids')invalid-feedback is-invalid @enderror"
                                     data-live-search="true" multiple data-none-selected-text="{{ trans('user_groups.select') }}">
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id }}" @if(in_array($user->id, old('user_ids', []))) selected @endif>{{ $user->name }}</option>
+                                    <option value="{{ $user->id }}" @if($user->id = old('receiver_id')) selected @endif>{{ $user->email }}</option>
                                 @endforeach
                             </select>
                             {{--                                @dump($errors->all())--}}

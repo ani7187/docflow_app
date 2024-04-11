@@ -71,7 +71,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+//    'timezone' => 'UTC',
+    'timezone' => 'Asia/Yerevan',
 
     /*
     |--------------------------------------------------------------------------
@@ -169,6 +170,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -184,6 +188,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+//        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+
     ])->toArray(),
 
 ];
