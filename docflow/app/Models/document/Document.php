@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Document extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, Searchable;
+    use SoftDeletes, InteractsWithMedia;
 
     protected $guarded = [];
 

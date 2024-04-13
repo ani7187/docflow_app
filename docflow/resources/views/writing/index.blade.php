@@ -4,7 +4,7 @@
 <div class="main-panel">
     <div class="content-wrapper">
         <div class="page-header">
-            <h3>Ստատիստիկ տվյալներ</h3>
+            <h3>Վիճակագրական տվյալներ</h3>
 {{--            <h3 class="page-title">--}}
 {{--                <span class="page-title-icon bg-gradient-primary text-white me-2">--}}
 {{--                  <i class="mdi mdi-home"></i>--}}
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+<!--        <div class="row">
             <div class="col-md-7 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -74,7 +74,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
     <!-- content-wrapper ends -->
     <!-- partial:partials/_footer.html -->

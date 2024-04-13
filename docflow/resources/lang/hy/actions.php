@@ -4,6 +4,7 @@ return [
     'edit' => 'Խմբագրել',
     'send_to_confirmation' => 'Ուղարկել հաստատման',
     'confirm' => 'Հաստատել',
+    'reject' => 'Մերժել',
     'send_to_sign' => 'Ուղարկել ստորագրման',
     'sign' => 'Ստորագրել',
     'finish' => 'Ավարտել',

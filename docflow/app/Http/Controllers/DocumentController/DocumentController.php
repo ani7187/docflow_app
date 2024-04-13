@@ -90,6 +90,7 @@ class DocumentController extends Controller
                         ->orWhere('documents.creation_date', 'like', "%$query%")
                         ->orwhere('users.email', 'like', "%$query%");
                 })
+                ->orderBy('documents.created_at', 'desc')
                 ->paginate(10);
         } else {
             $documents = Document::where('section_id', $sectionId)
@@ -115,9 +116,9 @@ class DocumentController extends Controller
 
     public function upload(Request $request)
     {
-//        $request->validate([
-//            'file' => 'required|file|mimes:jpeg,jpg,png,pdf,zip,docx,doc,xls,xlsx|max:50000'
-//        ]);
+        $request->validate([
+            'file' => 'required|file|mimes:pdf|max:50000'
+        ]);
 
         if ($request->file('file')) {
             $folder = uniqid() . '_' . now()->timestamp;
@@ -309,9 +310,11 @@ class DocumentController extends Controller
     {
         $media = $document->getMedia('files');
         $history = $document->actionHistory()->orderBy('created_at', 'desc')->get();
-        $receiveAction = $document->actionHistory()->where("receiver_id", auth()->user()->id)->pluck('action_name');
-//        dd($receiveAction);
-        return view('documents.show', compact('document', 'media', 'history'));
+        $receiveAction = $document->actionHistory()->where("receiver_id", auth()->user()->id)->pluck('action_name')->last();
+        $executeActions = $document->actionHistory()->where("executor_id", auth()->user()->id)->pluck('action_name')->toArray();
+
+        //        dd($receiveAction);
+        return view('documents.show', compact('document', 'media', 'history', 'receiveAction', 'executeActions'));
     }
     /*public function show(Document $document)
     {

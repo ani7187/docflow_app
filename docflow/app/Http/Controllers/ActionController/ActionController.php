@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ActionController;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PDFSignatureController;
+use App\Models\actionHistory\ActionHistory;
 use App\Models\document\Document;
 use App\Models\file\File;
 use App\Models\partnerOrganization\PartnerOrganization;
@@ -76,6 +77,78 @@ class ActionController extends Controller
         return view('documents.actions.confirm_show', compact('document', 'section', 'media'));
     }
 
+    public function confirm(Request $request, Document $document)
+    { // 1 confiremed
+
+        try {
+            DB::beginTransaction();
+            $sectionID = $request->input('section_id');
+            $notes = $request->input('notes') ?? "";
+
+            $existingStatus = SendToConfirmation::where('document_id', $document->id)
+                ->where('receiver_id', auth()->user()->id)
+                ->first();
+
+            $existingStatus->status_id = 1;
+            $existingStatus->save();
+
+            $history = ActionHistory::where('document_id', $document->id)
+                ->where('receiver_id', auth()->user()->id)
+                ->first();
+
+            $history->finish_status = 1;
+            $history->save();
+
+            $document->confirmation_status = 1;
+            $document->save();
+
+            $this->logAction("confirm", $notes, 0, $document->id);
+            DB::commit();
+
+            return redirect()->route('documents.show', ['document' => $document->id, 'section' => $sectionID]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect()->back()->withInput()->with('error', "something wrong");
+        }
+    }
+
+    public function reject(Request $request, Document $document)
+    { // 2 rejected
+
+        try {
+            DB::beginTransaction();
+            $sectionID = $request->input('section_id');
+            $notes = $request->input('notes') ?? "";
+            $existingStatus = SendToConfirmation::where('document_id', $document->id)
+                ->where('receiver_id', auth()->user()->id)
+                ->first();
+
+            $existingStatus->status_id = 2;
+//            dd($existingStatus);
+            $existingStatus->save();
+
+            $history = ActionHistory::where('document_id', $document->id)
+                ->where('receiver_id', auth()->user()->id)
+                ->first();
+
+            $history->finish_status = 1;
+            $history->save();
+
+            $document->confirmation_status = 2;
+            $document->save();
+
+            $this->logAction("reject", $notes, 0, $document->id);
+            DB::commit();
+
+            return redirect()->route('documents.show', ['document' => $document->id, 'section' => $sectionID]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect()->back()->withInput()->with('error', "something wrong");
+        }
+    }
+
     public function send_to_sign(Request $request, Document $document)
     {
         $section = $request->input('section_id');
@@ -133,6 +206,9 @@ class ActionController extends Controller
             $PDFSignatureController = new PDFSignatureController();
             $PDFSignatureController->generatePDFWithSignature($filePath, $media->file_name, $document->id);
         }
+
+        $document->document_signature_status = 1;
+        $document->save();
 
         $this->logAction("sign", "", 0, $document->id);
         return redirect()->route('documents.show', ['document' => $document->id, 'section' => $sectionID]);

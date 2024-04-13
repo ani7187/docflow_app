@@ -50,6 +50,7 @@ Route::middleware(['verified', 'auth'])->group(function () {
 Route::middleware(['verified', 'auth', 'pass_changed'])->group(function () {
     Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
 
+
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/add', [DocumentController::class, 'add'])->name('documents.add');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
@@ -58,13 +59,15 @@ Route::middleware(['verified', 'auth', 'pass_changed'])->group(function () {
     Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
-//    Route::get('/documents/search', [DocumentController::class, 'search'])->name('documents.search');
+
 
     Route::get('/documents/{document}/send_to_confirmation', [ActionController::class, 'send_to_confirmation'])->name('documents.send_to_confirmation');
-    Route::post('/documents/{document}', [ActionController::class, 'send'])->name('documents.send');
+    Route::post('/documents/{document}/send', [ActionController::class, 'send'])->name('documents.send');
 
     Route::get('/documents/{document}/confirm', [ActionController::class, 'confirm_show'])->name('documents.confirm_show');
-    //todo implement Route::post('/documents/{document}', [ActionController::class, 'confirm'])->name('documents.confirm');
+    Route::post('/documents/{document}/confirm', [ActionController::class, 'confirm'])->name('documents.confirm');
+    Route::post('/documents/{document}/reject', [ActionController::class, 'reject'])->name('documents.reject');
+
     Route::get('/documents/{document}/send_to_sign', [ActionController::class, 'send_to_sign'])->name('documents.send_to_sign');
     Route::post('/documents/{document}', [ActionController::class, 'send_to_sign_send'])->name('documents.send_sign');
     Route::get('/documents/{document}/sign', [ActionController::class, 'sign_show'])->name('documents.sign_show');

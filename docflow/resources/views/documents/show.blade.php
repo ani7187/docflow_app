@@ -5,8 +5,12 @@
     <div class="main-panel">
         <div class="content-wrapper">
             @include("partials.alerts")
-            @if($document->document_execution_status == 2)
-                @include("partials.actions", ["documentID" => $document->id, "sectionID" => $document->section_id])
+            @if($document->document_execution_status == 1 && !empty($receiveAction) || !empty($executeActions))
+                @include("partials.actions",
+                            ["documentID" => $document->id,
+                            "sectionID" => $document->section_id,
+                            'receiveAction' => $receiveAction,
+                            'executeActions' => $executeActions])
             @endif
                 {{--            <div class="card">--}}
             {{--                <div class="card-body">--}}

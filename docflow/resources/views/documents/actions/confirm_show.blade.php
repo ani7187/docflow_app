@@ -16,7 +16,7 @@
             </div>
             <div class="card mt-2">
                 <div class="card-body">
-                    <form action="" method="POST"  enctype="multipart/form-data">
+                    <form action="{{ route('documents.confirm', ['document' => $document->id]) }}" id="myForm" method="POST"  enctype="multipart/form-data">
                     @csrf
                         <div class="form-group">
                             <input name="section_id" type="number" value="{{ $section }}" hidden>
@@ -26,8 +26,8 @@
                             <textarea type="text" class="form-control" id="notes" placeholder="{{ trans('section.notes') }}"></textarea>
                         </div>
                         <div class="submit-buttons float-end">
-                            <button name="action" value="approve" class="btn btn-success" onclick="submitForm('confirm')">{{ trans('section.confirm') }}</button>
-                            <button name="action" value="reject" class="btn btn-danger" onclick="submitForm('reject')">{{ trans('section.reject') }}</button>
+                            <button name="action" value="approve" class="btn btn-success" onclick="setFormAction('{{ route('documents.confirm', ['document' => $document->id]) }}')">{{ trans('section.confirm') }}</button>
+                            <button name="action" value="reject" class="btn btn-danger" onclick="setFormAction('{{ route('documents.reject', ['document' => $document->id]) }}')">{{ trans('section.reject') }}</button>
                         </div>
 {{--                        <button type="submit" class="btn btn-primary float-end">{{ trans('auth.save') }}</button>--}}
                     </form>
@@ -38,35 +38,9 @@
 @endsection
 @section('scripts')
     <script>
-        function submitForm(action) {
-            // Get form data
-            var formData = new FormData(document.getElementById('resolutionForm'));
-            // Add additional data if needed based on the action
-            if (action === 'approve') {
-                formData.append('confirm_status', 'approve');
-            } else if (action === 'reject') {
-                formData.append('confirm_status', 'reject');
-            }
-
-            // Submit the form
-            fetch('/your-endpoint', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                    // Handle success response
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    // Handle error
-                });
+        function setFormAction(action) {
+            document.getElementById('myForm').action = action;
+            document.getElementById('myForm').submit();
         }
     </script>
 @endsection
