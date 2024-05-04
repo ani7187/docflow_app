@@ -12,6 +12,7 @@
         "elasticsearch/elasticsearch": "^8.13",
         "elibyy/tcpdf-laravel": "^11.1",
         "guzzlehttp/guzzle": "^7.2",
+        "james-heinrich/getid3": "^1.9",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
@@ -20,7 +21,9 @@
         "mpdf/mpdf": "^8.2",
         "smalot/pdfparser": "^2.9",
         "spatie/laravel-backup": "^8.6",
-        "spatie/laravel-medialibrary": "^10.15"
+        "spatie/laravel-medialibrary": "^10.15",
+        "spatie/pdf-to-text": "^1.52",
+        "ext-openssl": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

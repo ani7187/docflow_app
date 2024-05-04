@@ -9,9 +9,51 @@
                 </a>
             </div>
             @include("partials.alerts")
-            <div class="card">
-                <div class="card-body">
-                    @include("partials.files", ["media" => $media])
+            <div class="card p-3">
+                <div id="file-mod-view-file-list" class="file-mod-view-file-list" data-curr-index="0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table border="0" class="table table-hover" id="files-table">
+                                    <thead class="thead-light">
+                                    <tr>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($media as $file)
+                                        <tr>
+                                            <td style="width: 10px;height: 5px" class="pt-4 m-0">
+                                                <div class="form-group p-0 m-0">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input type="checkbox" name="file_id[]" class="form-check-input" value="{{ $file->id }}"> <i class="input-helper"></i></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <i style="color: #9170e7; font-size: 25px;" class="mdi {{ getFileIcon($file->extension) }}"></i>
+                                            </td>
+                                            <td>{{ $file->name }}</td>
+                                            <td>
+                                                <div class="float-end">
+                                                    <a href="#" class="btn btn-sm btn-primary open-file" data-file-url="{{ $file->url }}" title="Open">
+                                                        <i class="mdi mdi-open-in-new"></i>
+                                                    </a>
+                                                    <a href="{{ route('media.download', ['media' => $file->id]) }}" class="btn btn-sm btn-success" download="{{ $file->name }}" title="Ներբեռնել">
+                                                        <i class="mdi mdi-download"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                    @error('file_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card mt-2">

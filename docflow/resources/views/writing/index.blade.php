@@ -23,7 +23,7 @@
                 <div class="card bg-gradient-danger card-img-holder text-white">
                     <div class="card-body">
                         <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">Ստորագրված ֆայլեր <br>{{$startDate->format('Y-m-d')}} - {{now()->format('Y-m-d')}}<i class="mdi mdi-grease-pencil btn-icon-prepend mdi-24px float-right"></i>
+                        <h4 class="font-weight-normal mb-3">Հաստատված ֆայլեր <br>{{$startDate->format('Y-m-d')}} - {{now()->format('Y-m-d')}}<i class="mdi mdi-grease-pencil btn-icon-prepend mdi-24px float-right"></i>
                         </h4>
                         <h2 class="mb-5">{{$signedCount}}</h2>
 {{--                        <h6 class="card-text">Increased by 60%</h6>--}}

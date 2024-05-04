@@ -116,9 +116,9 @@ class DocumentController extends Controller
 
     public function upload(Request $request)
     {
-        $request->validate([
-            'file' => 'required|file|mimes:pdf|max:50000'
-        ]);
+//        $request->validate([
+//            'file' => 'required|file|mimes:pdf|max:50000'
+//        ]);
 
         if ($request->file('file')) {
             $folder = uniqid() . '_' . now()->timestamp;

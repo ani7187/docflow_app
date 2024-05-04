@@ -69,15 +69,19 @@ Route::middleware(['verified', 'auth', 'pass_changed'])->group(function () {
     Route::post('/documents/{document}/reject', [ActionController::class, 'reject'])->name('documents.reject');
 
     Route::get('/documents/{document}/send_to_sign', [ActionController::class, 'send_to_sign'])->name('documents.send_to_sign');
-    Route::post('/documents/{document}', [ActionController::class, 'send_to_sign_send'])->name('documents.send_sign');
+    Route::post('/documents/{document}/send_to_sign', [ActionController::class, 'send_to_sign_send'])->name('documents.send_sign');
     Route::get('/documents/{document}/sign', [ActionController::class, 'sign_show'])->name('documents.sign_show');
-    Route::post('/documents/{document}', [ActionController::class, 'sign'])->name('documents.sign');
+    Route::post('/documents/{document}/sign', [ActionController::class, 'sign'])->name('documents.sign');
     Route::get('/documents/{document}/finish', [ActionController::class, 'finish'])->name('documents.finish');
     Route::post('/documents/{document}', [ActionController::class, 'finish_store'])->name('documents.finish_store');
 
     Route::post('upload', [DocumentController::class, 'upload']);
     Route::get('/media/download/{media}', [FileController::class, 'download'])->name('media.download');
     Route::get('/media/download-all/{media}', [FileController::class, 'downloadAll'])->name('media.download-all');
+
+    Route::get('/file/metadata', [FileController::class, 'signDocument']);
+    Route::get('/file/verifySignature', [FileController::class, 'getSecret']);
+
 });
 
 Route::middleware(['verified', 'auth', 'role:2'])->group(function () {

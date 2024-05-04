@@ -31,9 +31,21 @@
                 @endif
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="title">{!! __('user_groups.add_members', ['name' => $groupName]) !!}</h4>
+{{--                        <h4 class="title">{!! __('user_groups.add_members', ['name' => $groupName]) !!}</h4>--}}
                         <form method="POST" action="{{ route('user_group_user.store', $group) }}">
                             @csrf
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="name">{{ trans('user_groups.name') }} *</label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                               id="name" name="name" value="{{ old('name') }}">
+                                        @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <select name="user_ids[]" id="user_ids" class="selectpicker form-control @error('user_ids')invalid-feedback is-invalid @enderror"
                                         data-live-search="true" multiple data-none-selected-text="{{ trans('user_groups.select') }}">

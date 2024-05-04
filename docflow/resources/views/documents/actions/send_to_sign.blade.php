@@ -11,7 +11,7 @@
             @include("partials.alerts")
             <div class="card">
                 <div class="card-body">
-{{--                    <form action="{{ route('documents.send_sign', ['document' => $document->id]) }}" method="POST"  enctype="multipart/form-data">--}}
+                    <form action="{{ route('documents.send_sign', ['document' => $document->id]) }}" method="POST"  enctype="multipart/form-data">
                     @csrf
                         <div class="form-group">
                             <input name="section_id" type="number" value="{{ $section }}" hidden>

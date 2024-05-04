@@ -30,7 +30,9 @@
 {{--                                <th><b>{{ trans("auth.company_code_short") }}</b></th>--}}
                                 <th><b>{{ trans("auth.created_at") }}</b></th>
                                 <th><b>{{ trans("auth.status") }}</b></th>
-                                <th colspan="2"><b></b></th> {{--{{ trans("menu.actions") }}--}}
+                                <th colspan="3"><b></b></th> {{--{{ trans("menu.actions") }}--}}
+                                <th><b>Մոդերատոր</b></th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -89,6 +91,12 @@
                                             @method('PUT')
                                             <button type="submit" class="btn p-0 m-0"><i class="mdi mdi-delete"></i></button>
                                         </form>
+                                    </td>
+                                    <td class="p-0 m-0">
+                                        <div class="form-check" style="margin-left: 55px">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" name="file_id[]" class="form-check-input" value=""> <i class="input-helper"></i></label>
+                                        </div>
                                     </td>
                                     {{--                                    <td><label class="badge badge-danger">Pending</label></td>--}}
                                 </tr>

@@ -78,13 +78,31 @@ class PDFSignatureController extends Controller
 
         // Output text for digital signature
 //        $pdf->SetFont('Helvetica', '', '12');
-        $pdf->SetXY(150, 100);
+
+        $existingContentHeight = $pdf->getY();
+
+        $pdf->SetXY(150, $existingContentHeight + 10);
+        $pdf->Cell(0, 0, 'Approved by:', 0, 1);
+        $pdf->SetX(150);
+        $pdf->Cell(0, 0, "Ani Azizyan", 0, 1);
+        $pdf->SetX(150);
+        $pdf->Cell(0, 0, 'Date: ' . date('Y-m-d H:i:s'), 0, 1);
+
+
+       /* $pdf->SetXY(150, 100);
         $pdf->Cell(0, 0, 'Signed by:', 0, 1);
         $pdf->SetXY(150, 105);
         $pdf->Cell(0, 0, "Ani Azizyan", 0, 1);
         $pdf->SetXY(150, 110);
-        $pdf->Cell(0, 0, 'Date: ' . date('Y-m-d H:i:s'), 0, 1);
+        $pdf->Cell(0, 0, 'Date: ' . date('Y-m-d H:i:s'), 0, 1);*/
 
+//        $pdf->SetKeywords('keyword1, keyword2');
+
+//        $pdf->addEmptySignatureAppearance(200, 10, null, null);
+//        $pdf->SetSignatureAppearance(100, 100, 10, 10);
+//        $pdf->setSignature('signature_field');
+
+        $pdf->Output($filePath, 'F');
 
         $pdfDirectory = storage_path('app/documents/tmp');
 
@@ -95,10 +113,12 @@ class PDFSignatureController extends Controller
         $filename = "Ստորագրված_" . $name;
         $pdfPath = $pdfDirectory . '/' . $filename;
 //        dd($pdfPath);
+        $pdfContent = $pdf->Output('', 'S');
+        $file = Crypt::encrypt($pdfContent);
+//        dd($file);
+        file_put_contents($pdfPath, $file);
 
-//        $file = Crypt::encrypt(file_get_contents($filePath));
-
-        $pdf->Output($pdfPath, 'I');
+//        $pdf->Output($pdfPath, 'F');
 
         $document = Document::findOrFail($docID);
         $document->addMedia($pdfPath)->toMediaCollection('files', 'documents');
