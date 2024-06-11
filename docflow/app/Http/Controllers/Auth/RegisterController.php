@@ -118,16 +118,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
         try {
             DB::beginTransaction();
 
-            $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role_id' => $data['role_id'],
-            ]);
+            try {
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'role_id' => $data['role_id'],
+                ]);
+            } catch (\Exception $e) {
+                // Log or handle the exception
+                dd($e->getMessage());
+            }
 
             if ($data['role_id'] == UserRole::COMPANY) {
                 $companyCode = $this->generateCompanyCode();
@@ -173,6 +177,23 @@ class RegisterController extends Controller
         } while (PartnerOrganization::where('company_code', $code)->exists());
 
         return $code;
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|RedirectResponse
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
     }
 
 }

@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://github.com/sweetalert2/sweetalert2/releases
+HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/28748255/8f2fb826-2472-4855-858d-2d7a8fca6359?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240314%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240314T180652Z&X-Amz-Expires=300&X-Amz-Signature=b5c8e531f4c0da108c28d0986255f9f0b5cb3e0db0b018d94a56427352018282&X-Amz-SignedHeaders=host&actor_id=121893474&key_id=0&repo_id=28748255&response-content-disposition=attachment%3B%20filename%3Dsweetalert2.min.css&response-content-type=application%2Foctet-stream
