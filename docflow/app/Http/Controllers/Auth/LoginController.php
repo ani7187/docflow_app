@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -19,7 +24,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, ThrottlesLogins;
 
     /**
      * Where to redirect users after login.
@@ -27,6 +32,10 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+    protected $maxAttempts = 5; // Maximum number of login attempts allowed
+    protected $decayMinutes = 5; // Lockout period in minutes
+
+    protected $throttleBy = 'ip';
 
     /**
      * Create a new controller instance.
@@ -38,8 +47,40 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function showLoginForm()
+    protected function throttleKey(Request $request)
     {
-        return view('auth.login');
+        return strtolower($request->ip() . '|' . $request->userAgent());
+    }
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    protected function validateLogin(Request $request): void
+    {
+        $messages = [
+            'email.required' => 'Email is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'password.required' => 'Password is required.',
+            'email.exists' => Lang::get("error.invalid_email"),
+            'failed' => 'ee'
+        ];
+
+        $email = $request->input("email");
+        $request->validate([
+            'email' => [
+                'required',
+                'email',
+                Rule::exists('users')->where('email', $email),
+            ],
+            'password' => ['required', 'string'],
+        ], $messages);
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        throw ValidationException::withMessages([
+            $this->username() => [trans('error.failed_auth')],
+        ]);
     }
 }

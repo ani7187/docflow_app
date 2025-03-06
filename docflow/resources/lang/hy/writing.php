@@ -8,5 +8,4 @@ return [
     'inner_type_report' => 'Զեկուցագիր',
     'inner_type_circular' => 'Ներքին շրջաբերական',
     'inner_type_order' => 'Հրաման',
-    'profile' => 'Անձնական էջ'
 ];

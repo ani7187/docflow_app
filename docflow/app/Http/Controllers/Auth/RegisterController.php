@@ -3,11 +3,27 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Mail\VerifyEmail;
+use App\Models\partnerOrganization\PartnerOrganization;
+use App\Models\partnerPerson\PartnerPerson;
+use App\Models\UserRole;
+use App\Notifications\CustomVerifyEmailNotification;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -29,8 +45,8 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
+//    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/verification-required';
     /**
      * Create a new controller instance.
      *
@@ -44,30 +60,140 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data): \Illuminate\Contracts\Validation\Validator
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+//        dd($data);
+        $validator = Validator::make($data, ['role_id' => 'required|integer']);
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+//        $messages = [//todo lang
+//            'email.required' => 'Email is required.',
+//            'email.email' => 'Please enter a valid email address.',
+//            'password.required' => 'Password is required.',
+//            'email.exists' => Lang::get("error.invalid_email"),
+//            'failed' => 'ee'
+//        ];
+
+        $rules = [
+            'name' => 'required|string|max:255|unique:users',
+            'email' => 'required|email|unique:users|string|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+            'password' => 'required|string|min:8|confirmed',
+        ];
+        if ($data['role_id'] == UserRole::COMPANY) {
+            $rules = array_merge($rules, [
+                'organization_name' => 'required|string|max:255',
+            ]);
+        } elseif ($data['role_id'] == UserRole::EMPLOYEE) {
+            $companyCode = $data['company_code'];
+
+            $rules = array_merge($rules, [
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'company_code' => ['required', 'string', 'max:255',
+                    Rule::exists('partner_organizations')->where(function ($query) use ($companyCode) {
+                        $query->whereNotNull('company_code')
+                            ->where('company_code', $companyCode);
+                    }),],
+            ]);
+        }
+
+        $validator = Validator::make($data, $rules);
+
+//        dd($validator->errors());
+//        $activeTab = $data['role_id'] == UserRole::COMPANY ? 'company' : 'employee';
+
+        return $validator;
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
-     * @return \App\Models\User
+     * @param array $data
+     * @return User
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            DB::beginTransaction();
+
+            try {
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'role_id' => $data['role_id'],
+                ]);
+            } catch (\Exception $e) {
+                // Log or handle the exception
+                dd($e->getMessage());
+            }
+
+            if ($data['role_id'] == UserRole::COMPANY) {
+                $companyCode = $this->generateCompanyCode();
+
+                PartnerOrganization::create([
+                    'user_id' => $user->id,
+                    'company_code' => $companyCode,
+                    'organization_name' => $data['organization_name'],
+//                    'organization_legal_type' => $data['organization_legal_type'],
+//                    'registration_number' => $data['registration_number'],
+                ]);
+            } else if ($data['role_id'] == UserRole::EMPLOYEE) {
+                $partnerOrg = PartnerOrganization::where('company_code', $data['company_code'])->first();
+                PartnerPerson::create([
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'patronymic_name' => $data['patronymic_name'],
+                    'position' => $data['position'],
+                    'company_code' => $partnerOrg->company_code,
+
+                    'user_id' => $user->id,
+                    'partner_organization_id' => $partnerOrg->id,
+                    // Assign other fields from the request data
+                ]);
+            }
+            $user->notify(new CustomVerifyEmailNotification());
+            DB::commit();
+            return $user;
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+//            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
     }
+
+    /**
+     * @return string
+     */
+    private function generateCompanyCode(): string
+    {
+        do {
+            $code = Str::random(6); // Adjust the length as needed
+        } while (PartnerOrganization::where('company_code', $code)->exists());
+
+        return $code;
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|RedirectResponse
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
+
 }
